@@ -16,7 +16,7 @@ const server = http.createServer((req, res) => {
   res.end('Hello World\n');
 });
 
-connection.query('SELECT * from Table1', function (error, results, fields) {
+connection.query('SELECT * from movies limit 1', function (error, results, fields) {
   if (error) throw error;
   console.log('The solution is: ', results);
 });
