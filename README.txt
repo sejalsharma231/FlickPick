@@ -1,3 +1,7 @@
+# CS348Project
+
+#Source code to access the database and print hello world
+
 const http = require('http');
 const port = 3000;
 
