@@ -1,3 +1,4 @@
+<<<<<<< feature/pranav
 # CS348Project
 
 #Source code to access the database and print hello world
@@ -30,3 +31,8 @@ connection.end();
 server.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
+=======
+
+edited by dpahwa
+# CS348Project
+>>>>>>> develop
