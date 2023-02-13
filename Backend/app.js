@@ -31,6 +31,10 @@ connection.query('SELECT * from movies limit 1', function (error, results, field
   console.log('The solution is: ', results);
 });
 
+app.get("/", (req, res) => {
+  res.json({message: "Server is now running on 3000"})
+});
+
 connection.end();
 
 app.listen(port, () => {
