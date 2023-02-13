@@ -1,6 +1,16 @@
 const http = require('http');
 const port = 3000;
 
+const express = require("express");
+const cors  = require('cors');
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+//const request = require("request");
+const parse = require("body-parser");
+
 var mysql = require('mysql');
 var connection = mysql.createConnection({
   host: 'localhost',
@@ -23,6 +33,6 @@ connection.query('SELECT * from movies limit 1', function (error, results, field
 
 connection.end();
 
-server.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
