@@ -2,7 +2,7 @@ const http = require('http');
 const port = 8000;
 
 const express = require("express");
-const cors  = require('cors');
+const cors = require('cors');
 const app = express();
 const parse = require("body-parser");
 
@@ -10,12 +10,12 @@ const userRouter = require('./routes/user');
 const moviesRouter = require('./routes/movies');
 
 
-
 app.use(cors());
 app.use(express.json());
 
 app.use('/user', userRouter);
 app.use('/movies', moviesRouter);
+
 
 //const request = require("request");
 

@@ -4,22 +4,41 @@ import {
     Grid,
     Paper,
     Typography,
-    Table,
+    TextField,
+    Button
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@mui/material';
-import { getMovies } from "../../api/movies"
+import { getMovies, searchMovies } from "../../api/movies"
 import MUIDataTable from "mui-datatables";
 
 
 const Home = () => {
+    const [rows, setRows] = useState([]);
+    const handleSearch = async () => {
+        console.log("Clicked " + inputText)
+        searchMovies(inputText)
+            .then(({ data }) => {
+                setRows(data);
+                console.log(rows)
+            })
+            .catch((error) => {
+                console.log("didn't work")
+                console.log(error);
+            })
+    }
+
+    const [inputText, setInputText] = useState('');
     const CustomToolbar = ({ displayData }) => {
         return (
             <Grid item>
-                <Typography variant="body2">
-                    Welcome to the home page. Take a look around!
-                </Typography>
+                <TextField
+                    label="Search"
+                    value={inputText}
+                    onChange={(e) => setInputText(e.target.value)}
+                />
+                <Button variant="contained" color="primary" onClick={handleSearch}>Search</Button>
             </Grid>
         );
     }
@@ -43,7 +62,6 @@ const Home = () => {
         }
     ];
 
-    const [rows, setRows] = useState([]);
     const options = {
         selectableRowsHideCheckboxes: true,
         selectToolbarPlacement: 'none',
@@ -65,7 +83,7 @@ const Home = () => {
                 // });
                 // console.log(data);
                 setRows(data);
-                console.log(rows)
+                //console.log(rows)
             })
             .catch((error) => {
                 console.log(error);
