@@ -1,14 +1,81 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     Grid,
     Paper,
     Typography,
+    Table,
 } from '@mui/material';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@mui/material';
+import { getMovies } from "../../api/movies"
+import MUIDataTable from "mui-datatables";
+
 
 const Home = () => {
+    const CustomToolbar = ({ displayData }) => {
+        return (
+            <Grid item>
+                <Typography variant="body2">
+                    Welcome to the home page. Take a look around!
+                </Typography>
+            </Grid>
+        );
+    }
+
+    const columns = [
+        {
+            name: "Series_Title",
+            label: "Name",
+        },
+        {
+            name: "Released_Year",
+            label: "Year",
+        },
+        {
+            name: "Runtime",
+            label: "Length",
+        },
+        {
+            name: "Genre",
+            label: "Genre",
+        }
+    ];
+
+    const [rows, setRows] = useState([]);
+    const options = {
+        selectableRowsHideCheckboxes: true,
+        selectToolbarPlacement: 'none',
+        //boolean = false
+        filter: false,
+        search: false,
+        download: false,
+        print: false,
+        viewColumns: 'false',
+        customToolbar: CustomToolbar
+    };
+
+    useEffect(() => {
+        getMovies()
+            .then(({ data }) => {
+                //accessing the document markdown
+                // data.forEach((row) => {
+                //     console.log(row);
+                // });
+                // console.log(data);
+                setRows(data);
+                console.log(rows)
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }, []);
+
+    // const rows = [
+    //     ["1", "Snow", "Jon", "35"]
+    // ];
+
     return (
         <div>
             <Paper>
@@ -30,9 +97,25 @@ const Home = () => {
                                     Add Users
                                 </Link>
                             </Typography>
+
                         </Grid>
                     </Grid>
                 </Box>
+                <div style={{ height: 400, width: '100%' }}>
+                    {/* <DataGrid>
+                        columns = {columns}
+                        rows = {rows}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        checkboxSelection
+                    </DataGrid> */}
+                    <MUIDataTable
+                        title={"Employee List"}
+                        data={rows}
+                        columns={columns}
+                        options={options}
+                    />
+                </div>
             </Paper>
         </div>
     );
