@@ -1,24 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
-import React, {useState, useEffect} from "react"
+import { Box } from '@mui/system';
+import React from 'react';
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+} from 'react-router-dom';
+import Home from './pages/home/Home.js';
+import OtherPage from './pages/otherPage/OtherPage'
+
+
 
 function App() {
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-        fetch("http://localhost:3000/")
-          .then((res) => res.json())
-          .then((data) => {
-      console.log(data);
-      setMessage(data.message)
-    });
-      }, []);
 
   return (
-    <div>
-      <h1>
-        {message}
-      </h1>
+    <div >
+      <Box p={4}>
+        <BrowserRouter>
+          <Routes>
+            <Route exact path="/" element={<Home />} />
+            <Route exact path="/otherpage" element={<OtherPage />} />
+          </Routes>
+        </BrowserRouter>
+      </Box>
     </div>
   );
 }
