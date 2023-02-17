@@ -68,6 +68,45 @@ router.get('/', function (req, res, next) {
     // connection.end();
   });
 
+  router.get('/watchlist', function (req, res, next) {
+    
+    const userID = req.query.userID
+    const queryString = `SELECT * FROM movies where id in (select id from Watchlist where userId = ${userID})`;
+    console.log(queryString);
+        connection.query(queryString, (error, results) => {
+            if (error) {
+                res.send(error);
+                // connection.end();
+            }else{
+                res.send(results);
+            }
+    });
+    // connection.end();
+  });
 
+
+  router.post('/watchlist', function (req, res, next) {
+
+    const {
+        userID,
+        type,
+        id,
+    } = req.body;
+    console.log(userID);
+
+    // add validators to check that everything is a string
+
+    const queryString = `INSERT into Watchlist (userID,type,id) VALUES ("${userID}", "${type}", "${id}")`;
+
+    console.log(queryString);
+        connection.query(queryString, (error, results) => {
+            if (error) {
+                res.status(400).send('Database could not insert into watchlist');
+            }else{
+                res.send("Added new wtachlist entry");
+            }
+    });
+    // connection.end();
+  });
 
 module.exports = router;

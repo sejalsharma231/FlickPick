@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom';
 import Home from './pages/home/Home.js';
 import OtherPage from './pages/otherPage/OtherPage'
-
+import User from './pages/UserPage/Userpage.js';
 
 
 function App() {
@@ -19,6 +19,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route exact path="/" element={<Home />} />
+            <Route exact path="/user" element={<User />} />
             <Route exact path="/otherpage" element={<OtherPage />} />
           </Routes>
         </BrowserRouter>
