@@ -1,0 +1,7 @@
+
+{
+    "name": "Login",
+    "version": "1.0.0",
+    "private": true,
+    "main": "Login.js"
+  }
