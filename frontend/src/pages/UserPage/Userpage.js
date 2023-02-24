@@ -3,14 +3,12 @@ import {
     Box,
     Grid,
     Paper,
-    Typography,
-    Table,
+    Typography
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@mui/material';
 import MUIDataTable from "mui-datatables";
 import { getUserWatchlist } from '../../api/user';
-import { getMovies } from '../../api/movies';
 
 
 const User = () => {
@@ -56,13 +54,8 @@ const User = () => {
     };
 
     useEffect(() => {
-        getUserWatchlist(2)
+        getUserWatchlist(1)
             .then(({ data }) => {
-                //accessing the document markdown
-                // data.forEach((row) => {
-                //     console.log(row);
-                // });
-                // console.log(data);
                 setRows(data);
                 console.log(data)
             })
@@ -70,10 +63,6 @@ const User = () => {
                 console.log(error);
             })
     }, []);
-
-    // const rows = [
-    //     ["1", "Snow", "Jon", "35"]
-    // ];
 
     return (
         <div>
@@ -83,7 +72,7 @@ const User = () => {
                         component={RouterLink}
                     >
                         Logout
-                                </Link>
+                    </Link>
                 </Typography>
 
             </Grid>

@@ -12,9 +12,9 @@ export const getUsers = () => {
   return Axios().get('/user');
 };
 
-export const validateUser = (fn, ln, p) => {
+export const validateUser = (credentials) => {
   //console.log("user: " + newUser)
-  return Axios().get('/user/validate', { params: {firstName : fn, lastName : ln, password : p}})
+  return Axios().post('/user/validate', credentials);
 }
 
   export const getUserWatchlist = (userid)=>{
