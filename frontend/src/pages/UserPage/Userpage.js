@@ -4,41 +4,22 @@ import {
     Grid,
     Paper,
     Typography,
-    TextField,
-    Button
+    Table,
 } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@mui/material';
-import { getMovies, searchMovies } from "../../api/movies"
 import MUIDataTable from "mui-datatables";
+import { getUserWatchlist } from '../../api/user';
+import { getMovies } from '../../api/movies';
 
 
-const Home = () => {
-    const [rows, setRows] = useState([]);
-    const handleSearch = async () => {
-        console.log("Clicked " + inputText)
-        searchMovies(inputText)
-            .then(({ data }) => {
-                setRows(data);
-                console.log(rows)
-            })
-            .catch((error) => {
-                console.log("didn't work")
-                console.log(error);
-            })
-    }
-
-    const [inputText, setInputText] = useState('');
+const User = () => {
     const CustomToolbar = ({ displayData }) => {
         return (
             <Grid item>
-                <TextField
-                    label="Search"
-                    value={inputText}
-                    onChange={(e) => setInputText(e.target.value)}
-                />
-                <Button variant="contained" color="primary" onClick={handleSearch}>Search</Button>
+                <Typography variant="body2">
+                    Welcome to the User page
+                </Typography>
             </Grid>
         );
     }
@@ -62,10 +43,10 @@ const Home = () => {
         }
     ];
 
+    const [rows, setRows] = useState([]);
     const options = {
         selectableRowsHideCheckboxes: true,
         selectToolbarPlacement: 'none',
-        //boolean = false
         filter: false,
         search: false,
         download: false,
@@ -75,7 +56,7 @@ const Home = () => {
     };
 
     useEffect(() => {
-        getMovies()
+        getUserWatchlist(2)
             .then(({ data }) => {
                 //accessing the document markdown
                 // data.forEach((row) => {
@@ -83,7 +64,7 @@ const Home = () => {
                 // });
                 // console.log(data);
                 setRows(data);
-                //console.log(rows)
+                console.log(data)
             })
             .catch((error) => {
                 console.log(error);
@@ -96,39 +77,32 @@ const Home = () => {
 
     return (
         <div>
+            <Grid item>
+                <Typography variant="body2">
+                    <Link to="/"
+                        component={RouterLink}
+                    >
+                        Logout
+                                </Link>
+                </Typography>
+
+            </Grid>
             <Paper>
                 <Box p={4}>
                     <Grid container direction="column" spacing={1}>
                         <Grid item>
-                            <Typography component="h1" variant="h4"><b>Home</b></Typography>
+                            <Typography component="h1" variant="h4"><b>User</b></Typography>
                         </Grid>
                         <Grid item>
                             <Typography variant="body2">
-                                Welcome to the home page. Take a look around!
+                                Welcome to the User page
                             </Typography>
-                        </Grid>
-                        <Grid item>
-                            <Typography variant="body2">
-                                <Link to="/otherPage"
-                                    component={RouterLink}
-                                >
-                                    Add Users
-                                </Link>
-                            </Typography>
-
                         </Grid>
                     </Grid>
                 </Box>
                 <div style={{ height: 400, width: '100%' }}>
-                    {/* <DataGrid>
-                        columns = {columns}
-                        rows = {rows}
-                        pageSize={5}
-                        rowsPerPageOptions={[5]}
-                        checkboxSelection
-                    </DataGrid> */}
                     <MUIDataTable
-                        title={"Movie List"}
+                        title={"Watch List"} // only print if in the watchlist
                         data={rows}
                         columns={columns}
                         options={options}
@@ -139,4 +113,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default User;

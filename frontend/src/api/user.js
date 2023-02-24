@@ -9,3 +9,10 @@ export const postUser = (newUser) => {
   export const getUsers = () => {
     return Axios().get('/user');
   };
+
+  export const getUserWatchlist = (userid)=>{
+    return Axios().get('/user/watchlist', {
+      params: {
+        userID: userid
+      }});
+  }
