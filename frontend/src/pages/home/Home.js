@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { validateUser } from "../../api/user";
+import { get, update } from "lodash";
 import {
   Box,
   Typography,
@@ -62,14 +63,26 @@ const Home = () => {
     {
       name: "Series_Title",
       label: "Name",
+      options: {
+        filter: false,
+        sort: false,
+      }
     },
     {
       name: "Released_Year",
       label: "Year",
+      options: {
+        filter: false,
+        sort: false,
+      }
     },
     {
       name: "Runtime",
       label: "Length",
+      options: {
+        filter: false,
+        sort: false,
+      }
     },
     {
       name: "Genre",
@@ -97,7 +110,47 @@ const Home = () => {
       display: false,
       }
     },
+    {
+      name: "add_to_watchlist",
+      label: "Add to Watchlist",
+      options: {
+        filter: false,
+        sort: false,
+        empty: true,
+        customBodyRender: (item, {currentTableData, rowIndex}) => {
+         return (
+           <WLButton currentTableData = {currentTableData} rowIndex = {rowIndex} ></WLButton>
+         )
+        },
+      }
+    }
   ];
+
+  const WLButton = ({currentTableData, rowIndex}) => {
+    const [WLButtonText, setWLButtonText] = useState("Add to Watchlist")
+    const updateWLButtonText = (text) => setWLButtonText(text)
+          
+          function handleAddToWatchlist(data) {
+            console.log(data)
+            if (WLButtonText == "Add to Watchlist") {
+              updateWLButtonText("Remove from Watchlist")
+            } else if (WLButtonText == "Remove from Watchlist") {
+              updateWLButtonText("Add to Watchlist")
+            }
+          }
+
+          return(
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleAddToWatchlist(get(currentTableData[rowIndex], 'data'))}    
+              //onClick= {() => console.log(get(currentTableData[rowIndex], 'data'))}
+              //onClick = {() => updateWLButtonText("Remove from Watchlist")}     
+            >
+              {WLButtonText}
+            </Button>
+          )
+  }
 
   const options = {
     selectableRowsHideCheckboxes: true,
