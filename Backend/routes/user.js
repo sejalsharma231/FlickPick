@@ -102,7 +102,6 @@ router.get('/watchlist', function (req, res, next) {
 
 
 router.post('/watchlist', function (req, res, next) {
-
   const {
     userID,
     type,

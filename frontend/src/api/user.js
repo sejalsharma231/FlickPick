@@ -17,9 +17,19 @@ export const validateUser = (credentials) => {
   return Axios().post('/user/validate', credentials);
 }
 
-  export const getUserWatchlist = (userid)=>{
-    return Axios().get('/user/watchlist', {
-      params: {
-        userID: userid
-      }});
-  }
+export const getUserWatchlist = (userid)=>{
+  return Axios().get('/user/watchlist', {
+    params: {
+      userID: userid
+    }});
+}
+
+export const addToUserWatchlist = (userid,type,movieID)=>{
+  return Axios().post('/user/watchlist', {
+    params: {
+      userID: userid,
+      type: type,
+      id : movieID
+    }});
+}
+

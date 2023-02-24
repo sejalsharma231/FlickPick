@@ -74,7 +74,29 @@ const Home = () => {
     {
       name: "Genre",
       label: "Genre",
-    }
+    },
+    {
+      name: "Overview",
+      label: "Summary",
+    },
+    {
+      name: "IMDB_Rating",
+      label: "IMDB Rating",
+    },
+    {
+      name: "id",
+      label: "id",
+      options: {
+      display: false,
+      }
+    },
+    {
+      name: "Postr_Link",
+      label: "Link",
+      options: {
+      display: false,
+      }
+    },
   ];
 
   const options = {
