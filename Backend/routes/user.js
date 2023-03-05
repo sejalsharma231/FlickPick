@@ -22,24 +22,31 @@ router.post('/', function (req, res) {
     firstName,
     lastName,
     password,
+    email,
   } = req.body;
 
   // to check that all user information is valid
   const isValidFirstName = firstName !== undefined && typeof firstName == "string";
   const isValidLastName = lastName !== undefined && typeof lastName == "string";
   const isValidPassword = password !== undefined && typeof password == "string";
+  const isValidEmail = email !== undefined && typeof email == "string";
 
-  if (isValidFirstName && isValidLastName && isValidPassword) {
+  if (isValidFirstName && isValidLastName && isValidPassword && isValidEmail) {
     const uuid = uuidv4();
 
-    const queryString = `INSERT into users (uuid,firstName,lastName, password) VALUES ("${uuid}", "${firstName}", "${lastName}", "${password}" )`;
+    const queryString = `INSERT into users (uuid,firstName,lastName, password, email) VALUES ("${uuid}", "${firstName}", "${lastName}", "${password}", "${email}" )`;
 
     console.log(queryString);
     connection.query(queryString, (error, results) => {
       if (error) {
         res.status(400).send("Database could not insert the user");
       } else {
-        res.send("Added new user");
+        console.log(results);
+        const jwtToken = jwt.sign(
+          { email: email},
+          "secret"
+        )
+        res.json({message: "Welcome Back!", token: jwtToken});
       }
     });
   } else {
@@ -74,7 +81,7 @@ router.post("/validate", function (req, res ) {
       } else {
         if (results.length == 1) {
           const jwtToken = jwt.sign(
-            { id: results.id, email: results.email},
+            { email: results.email},
             "secret"
           )
           res.json({message: "Welcome Back!", token: jwtToken});
