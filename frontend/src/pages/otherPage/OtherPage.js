@@ -186,6 +186,7 @@ export default OtherPage;
               <TextField id="firstName" label="First Name" variant="filled" defaultValue={newUser.firstName} onChange={handleChange} type="text" size="small" required />
               <TextField id="lastName" label="Last Name" variant="filled" defaultValue={newUser.lastName} onChange={handleChange} type="text" size="small" required />
               <TextField id="password" label="Password" variant="filled" defaultValue={newUser.password} onChange={handleChange} type="text" size="small" required />
+              <TextField id="email" label="Email" variant="filled" type="email" size="small" required />
               <button type="submit">
                 Submit
               </button>
