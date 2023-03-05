@@ -14,7 +14,7 @@ import User from './pages/UserPage/Userpage.js';
 
 // components
 import AppBar from './components/AppBar/AppBar.js';
-import Login from './components/Login/Login.js';
+import Login from './pages/Login/Login.js';
 
 import { ThemeProvider } from '@mui/material/styles';
 import theme from "./theme";
@@ -30,15 +30,11 @@ function App() {
     <ThemeProvider theme={theme}>
       <div >
         <BrowserRouter>
-          <div>
-            <AppBar>
-
-            </AppBar>
-          </div>
           <Routes>
-            <Route exact path="/" element={<Home />} />
-            <Route exact path="/user" element={<User />} />
-            <Route exact path="/otherpage" element={<OtherPage />} />
+            <Route exact path="/" element={<div><AppBar /><Home /></div>} />
+            <Route exact path="/user" element={<div><AppBar /><User /></div>}/>
+            <Route exact path="/otherpage" element={<div><AppBar /><OtherPage /></div>} />
+            <Route exact path="/login" element={<Login />} />
           </Routes>
         </BrowserRouter>
       </div>
