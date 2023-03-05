@@ -100,25 +100,63 @@ router.get('/watchlist', function (req, res, next) {
   });
 });
 
+router.get('/watchlist/check', function (req, res, next) {
+  const userID = req.query.userID
+  const type = req.query.type
+  const id = req.query.id
+  const queryString = `SELECT * FROM Watchlist WHERE userID = ${userID} and type = "${type}" and id = ${id}`;
+  console.log(queryString);
+  connection.query(queryString, (error, results) => {
+    if (error) {
+      res.send(error);
+    } else {
+      res.send(results);
+    }
+  });
+});
 
-router.post('/watchlist', function (req, res, next) {
+router.post('/watchlist/add', function (req, res, next) {
   const {
     userID,
     type,
     id,
   } = req.body;
-  console.log(userID);
+
+  console.log(type);
 
   // add validators to check that everything is a string
 
-  const queryString = `INSERT into Watchlist (userID,type,id) VALUES ("${userID}", "${type}", "${id}")`;
+  const queryString = `INSERT into Watchlist (userID,type,id) VALUES (${userID}, "${type}", ${id})`;
 
   console.log(queryString);
   connection.query(queryString, (error, results) => {
     if (error) {
       res.status(400).send('Database could not insert into watchlist');
     } else {
-      res.send("Added new wtachlist entry");
+      res.send("Added new watchlist entry");
+    }
+  });
+});
+
+router.post('/watchlist/remove', function (req, res, next) {
+  const {
+    userID,
+    type,
+    id,
+  } = req.body;
+
+  console.log(type);
+
+  // add validators to check that everything is a string
+
+  const queryString = `DELETE from Watchlist WHERE userID = ${userID} and type = "${type}" and id = ${id}`;
+
+  console.log(queryString);
+  connection.query(queryString, (error, results) => {
+    if (error) {
+      res.status(400).send('Database could not delete from watchlist');
+    } else {
+      res.send("Deleted selected watchlist entry");
     }
   });
 });

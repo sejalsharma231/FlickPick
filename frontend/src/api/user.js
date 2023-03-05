@@ -23,13 +23,20 @@ export const getUserWatchlist = (userid)=>{
       userID: userid
     }});
 }
-
-export const addToUserWatchlist = (userid,type,movieID)=>{
-  return Axios().post('/user/watchlist', {
+export const getExistsInUserWatchlist = (userID,type,id)=>{
+  return Axios().get('/user/watchlist/check', {
     params: {
-      userID: userid,
+      userID: userID,
       type: type,
-      id : movieID
+      id: id
     }});
+}
+
+export const addToUserWatchlist = (userid,type,id)=>{
+  return Axios().post('/user/watchlist/add', {userID : userid,type:type,id:id});
+}
+
+export const removeFromUserWatchlist = (userid,type,id)=>{
+  return Axios().post('/user/watchlist/remove', {userID : userid,type:type,id:id});
 }
 

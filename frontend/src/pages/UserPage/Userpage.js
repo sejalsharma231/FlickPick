@@ -10,7 +10,6 @@ import { Link } from '@mui/material';
 import MUIDataTable from "mui-datatables";
 import { getUserWatchlist } from '../../api/user';
 
-
 const User = () => {
     const CustomToolbar = ({ displayData }) => {
         return (
