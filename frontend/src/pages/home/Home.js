@@ -27,8 +27,6 @@ import MUIDataTable from "mui-datatables";
 
 const Home = () => {
   const [rows, setRows] = useState([]);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [openError, setError] = useState(false);
 
 
   const handleSearch = async () => {
@@ -101,22 +99,6 @@ const Home = () => {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "right" }}>
-        <Button onClick={() => setDialogOpen(true)}>Login</Button>
-      </div>
-      <CreateDialog
-        open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
-        onError={() => setError(true)}
-      />
-      <Snackbar
-        open={openError}
-        autoHideDuration={6000}
-      >
-        <Alert severity="error" sx={{ width: "100%" }}>
-          Something went wrong!
-        </Alert>
-      </Snackbar>
       <Paper>
         <Box p={4}>
           <Grid container direction="column" spacing={1}>
@@ -141,13 +123,6 @@ const Home = () => {
           </Grid>
         </Box>
         <div style={{ height: 400, width: '100%' }}>
-          {/* <DataGrid>
-                        columns = {columns}
-                        rows = {rows}
-                        pageSize={5}
-                        rowsPerPageOptions={[5]}
-                        checkboxSelection
-                    </DataGrid> */}
           <MUIDataTable
             title={"Movie List"}
             data={rows}
@@ -162,65 +137,3 @@ const Home = () => {
 
 export default Home;
 
-const CreateDialog = ({ open, onClose, onError }) => {
-  const navigate = useNavigate();
-
-  const [credentials, setCredentials] = useState({
-    email: '',
-    password: '',
-  });
-
-  const handleChange = (e) => {
-    setCredentials({ ...credentials, [e.target.id]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    validateUser(credentials)
-      .then((response) => {
-        navigate("/otherPage");
-      })
-      .catch((error) => {
-        // handle error
-        onError();
-      });
-  };
-
-  return (
-    <Dialog open={open} onClose={onClose} fullWidth>
-      <DialogTitle>Login</DialogTitle>
-      <DialogContent>
-        <form onSubmit={handleSubmit}>
-          <FormControl>
-            <TextField
-              id="email"
-              label="Email"
-              variant="filled"
-              defaultValue={credentials.email}
-              onChange={handleChange}
-              type="text"
-              size="small"
-              required
-            />
-            <TextField
-              id="password"
-              label="Password"
-              variant="filled"
-              defaultValue={credentials.password}
-              onChange={handleChange}
-              type="text"
-              size="small"
-              required
-            />
-            <button type="submit" >Submit</button>
-          </FormControl>
-        </form>
-      </DialogContent>
-      <div>
-        <IconButton onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
-      </div>
-    </Dialog>
-  );
-};
