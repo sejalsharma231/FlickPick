@@ -43,10 +43,10 @@ router.post('/', function (req, res) {
       } else {
         console.log(results);
         const jwtToken = jwt.sign(
-          { email: email},
+          { email: email },
           "secret"
         )
-        res.json({message: "Welcome Back!", token: jwtToken});
+        res.json({ message: "Welcome Back!", token: jwtToken });
       }
     });
   } else {
@@ -67,10 +67,10 @@ router.get("/", function (req, res, next) {
   });
 });
 
-router.post("/validate", function (req, res ) {
-  const {email,password} = req.body;
+router.post("/validate", function (req, res) {
+  const { email, password } = req.body;
 
-  const isValidEmail= email !== undefined && typeof email == "string";
+  const isValidEmail = email !== undefined && typeof email == "string";
   const isValidPassword = password !== undefined && typeof password == "string";
 
   if (isValidEmail && isValidPassword) {
@@ -82,10 +82,10 @@ router.post("/validate", function (req, res ) {
         //console.log(results[0].userID);
         if (results.length == 1) {
           const jwtToken = jwt.sign(
-            { userID: results[0].userID},
+            { userID: results[0].userID },
             "secret"
           )
-          res.json({message: "Welcome Back!", token: jwtToken, userID: results[0].userID});
+          res.json({ message: "Welcome Back!", token: jwtToken, userID: results[0].userID });
         } else {
           res.status(404).send("Email or password does not match");
         }
@@ -97,7 +97,7 @@ router.post("/validate", function (req, res ) {
 router.get('/watchlist', function (req, res, next) {
 
   const userID = req.query.userID
-  const queryString = `SELECT * FROM movies where id in (select id from Watchlist where userId = ${userID})`;
+  const queryString = `SELECT * FROM movies where id in (select mid from Watchlist where userId = ${userID})`;
   connection.query(queryString, (error, results) => {
     if (error) {
       res.send(error);
