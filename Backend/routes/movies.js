@@ -58,7 +58,7 @@ router.get('/sort/data', function (req, res, next) {
     } else {
         sortField = 'Runtime'
     }
-    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genre FROM movies where Series_Title like \'%' + searchField + '%\' order by ' + sortField;
+    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genre, Overview, IMDB_Rating, id, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' order by ' + sortField;
     console.log(queryString);
     connection.query(queryString, (error, results) => {
         if (error) {
@@ -104,7 +104,7 @@ router.get('/filter/data', function (req, res, next) {
         append(filterList[i], (i == 0))
     }
     partialQuery += ')'
-    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genre FROM movies where Series_Title like \'%' + searchField + '%\' ' + partialQuery;
+    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genre, Overview, IMDB_Rating, id, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' ' + partialQuery;
     console.log(queryString);
     connection.query(queryString, (error, results) => {
         if (error) {
