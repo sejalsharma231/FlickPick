@@ -1,0 +1,57 @@
+mysql> source ./test-sample.sql
+Query OK, 5 rows affected (0.02 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+Query OK, 2 rows affected (0.00 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+Query OK, 4 rows affected (0.00 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
++----+------------------------+---------------+---------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+---------------------------------------------------------------+
+| id | Series_Title           | Released_Year | Runtime | Genre        | Overview                                                                                                                                                             | IMDB_Rating | Poster_Link                                                   |
++----+------------------------+---------------+---------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+---------------------------------------------------------------+
+|  2 | The Godfather          |          1972 | 175 min | Crime, Drama | An organized crime dynasty's aging patriarch transfers control of his clandestine empire to his reluctant son.                                                       |         9.2 | https://www.imdb.com/title/tt0068646/mediaviewer/rm1521716480 |
+|  3 | The Godfather: Part II |          1974 | 202 min | Crime, Drama | The early life and career of Vito Corleone in 1920s New York City is portrayed, while his son, Michael, expands and tightens his grip on the family crime syndicate. |         9.0 | https://www.imdb.com/title/tt0071562/mediaviewer/rm1469567744 |
++----+------------------------+---------------+---------+--------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+---------------------------------------------------------------+
+2 rows in set (0.01 sec)
+
++----+--------------------------+---------------+---------+---------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+----+---------------------------------------------------------------+
+| id | Series_Title             | Released_Year | Runtime | Genre                     | Overview                                                                                                                                                                                      | IMDB_Rating | id | Poster_Link                                                   |
++----+--------------------------+---------------+---------+---------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+----+---------------------------------------------------------------+
+|  2 | The Godfather            |          1972 | 175 min | Crime, Drama              | An organized crime dynasty's aging patriarch transfers control of his clandestine empire to his reluctant son.                                                                                |         9.2 |  2 | https://www.imdb.com/title/tt0068646/mediaviewer/rm1521716480 |
+|  3 | The Godfather: Part II   |          1974 | 202 min | Crime, Drama              | The early life and career of Vito Corleone in 1920s New York City is portrayed, while his son, Michael, expands and tightens his grip on the family crime syndicate.                          |         9.0 |  3 | https://www.imdb.com/title/tt0071562/mediaviewer/rm1469567744 |
+|  1 | The Shawshank Redemption |          1994 | 142 min | Drama                     | Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.                                                                        |         9.3 |  1 | https://www.imdb.com/title/tt0111161/mediaviewer/rm471071744  |
+|  4 | The Dark Knight          |          2008 | 152 min | Action, Crime, Drama      | When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice. |         9.0 |  4 | https://www.imdb.com/title/tt0468569/mediaviewer/rm3223338240 |
+|  5 | Inception                |          2010 | 148 min | Action, Adventure, Sci-Fi | A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.                                      |         8.8 |  5 | https://www.imdb.com/title/tt1375666/mediaviewer/rm1084172801 |
++----+--------------------------+---------------+---------+---------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+----+---------------------------------------------------------------+
+5 rows in set (0.00 sec)
+
++----+--------------------------+---------------+---------+----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+----+---------------------------------------------------------------+
+| id | Series_Title             | Released_Year | Runtime | Genre                | Overview                                                                                                                                                                                      | IMDB_Rating | id | Poster_Link                                                   |
++----+--------------------------+---------------+---------+----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+----+---------------------------------------------------------------+
+|  2 | The Godfather            |          1972 | 175 min | Crime, Drama         | An organized crime dynasty's aging patriarch transfers control of his clandestine empire to his reluctant son.                                                                                |         9.2 |  2 | https://www.imdb.com/title/tt0068646/mediaviewer/rm1521716480 |
+|  3 | The Godfather: Part II   |          1974 | 202 min | Crime, Drama         | The early life and career of Vito Corleone in 1920s New York City is portrayed, while his son, Michael, expands and tightens his grip on the family crime syndicate.                          |         9.0 |  3 | https://www.imdb.com/title/tt0071562/mediaviewer/rm1469567744 |
+|  1 | The Shawshank Redemption |          1994 | 142 min | Drama                | Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.                                                                        |         9.3 |  1 | https://www.imdb.com/title/tt0111161/mediaviewer/rm471071744  |
+|  4 | The Dark Knight          |          2008 | 152 min | Action, Crime, Drama | When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice. |         9.0 |  4 | https://www.imdb.com/title/tt0468569/mediaviewer/rm3223338240 |
++----+--------------------------+---------------+---------+----------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+----+---------------------------------------------------------------+
+4 rows in set (0.00 sec)
+
+Query OK, 1 row affected (0.00 sec)
+
++--------+-----+
+| userID | mid |
++--------+-----+
+|      1 |   3 |
++--------+-----+
+1 row in set (0.00 sec)
+
++----+---------------------------------------------------------------+--------------------------+---------------+-------------+---------+---------------------------+-------------+----------------------------------------------------------------------------------------------------------------------------------------------------------+------------+-------------------+-------------------+----------------------+------------+--------------+-------------+--------+
+| id | Poster_Link                                                   | Series_Title             | Released_Year | Certificate | Runtime | Genre                     | IMDB_Rating | Overview                                                                                                                                                 | Meta_Score | Director          | Star1             | Star2                | Star3      | Star4        | No_of_Votes | Gross  |
++----+---------------------------------------------------------------+--------------------------+---------------+-------------+---------+---------------------------+-------------+----------------------------------------------------------------------------------------------------------------------------------------------------------+------------+-------------------+-------------------+----------------------+------------+--------------+-------------+--------+
+|  1 | https://www.imdb.com/title/tt0111161/mediaviewer/rm471071744  | The Shawshank Redemption |          1994 | R           | 142 min | Drama                     |         9.3 | Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.                                   |         80 | Frank Darabont    | Tim Robbins       | Morgan Freeman       | Bob Gunton | NULL         |     2392870 |  28.34 |
+|  5 | https://www.imdb.com/title/tt1375666/mediaviewer/rm1084172801 | Inception                |          2010 | PG-13       | 148 min | Action, Adventure, Sci-Fi |         8.8 | A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O. |         74 | Christopher Nolan | Leonardo DiCaprio | Joseph Gordon-Levitt | Ellen Page | Ken Watanabe |     2112267 | 292.58 |
++----+---------------------------------------------------------------+--------------------------+---------------+-------------+---------+---------------------------+-------------+----------------------------------------------------------------------------------------------------------------------------------------------------------+------------+-------------------+-------------------+----------------------+------------+--------------+-------------+--------+
+2 rows in set (0.00 sec)
+
+mysql> 
