@@ -57,9 +57,9 @@ const User = () => {
         getUserWatchlist(1)
             .then(({ data }) => {
                 setRows(data);
-                console.log(data)
             })
             .catch((error) => {
+                // implement error code
                 console.log(error);
             })
     }, []);

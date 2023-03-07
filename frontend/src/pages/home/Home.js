@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { validateUser } from "../../api/user";
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Checkbox from '@mui/material/Checkbox';
@@ -9,27 +8,17 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 
 import {
-  Box,
-  Typography,
-  Link,
   Paper,
   Button,
   Grid,
-  Dialog,
-  DialogContent,
-  IconButton,
-  DialogTitle,
   TextField,
   FormControl,
-  Snackbar,
-  Alert,
+  InputLabel,
+  Select,
 } from "@mui/material";
-import {
-  ArrowBack as ArrowBackIcon,
-  Close as CloseIcon,
-} from "@mui/icons-material";
 import { getMovies, searchMovies, sortMovies, filterMovies } from "../../api/movies"
 import MUIDataTable from "mui-datatables";
+import { MenuItem } from "@mui/material";
 
 const Home = () => {
   const [rows, setRows] = useState([]);
@@ -71,68 +60,72 @@ const Home = () => {
     }
     filterMovies(filterList, sortText, inputText).then(({ data }) => {
       setRows(data);
-      console.log(rows)
     })
       .catch((error) => {
-        console.log("didn't work")
+        // implement error code
         console.log(error);
       })
   }
 
   const handleSearch = async () => {
-    console.log("Clicked " + inputText)
     searchMovies(inputText)
       .then(({ data }) => {
         setRows(data);
-        console.log(rows)
       })
       .catch((error) => {
-        console.log("didn't work")
+        // implement error code
         console.log(error);
       })
   }
 
   const handleSort = async () => {
-    console.log("Sorting by " + sortText)
     sortMovies(sortText, inputText)
       .then(({ data }) => {
         setRows(data);
-        console.log(rows)
       })
       .catch((error) => {
-        console.log("didn't work")
+        // implement error code
         console.log(error);
       })
   }
 
   const CustomToolbar = ({ displayData }) => {
+    document.body.style.color = 'black';
     return (
-      <Grid item>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <TextField
           label="Search"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
+          size="small"
         />
         <Button variant="contained" color="primary" onClick={handleSearch}>Search</Button>
-        <DropdownButton id="dropdown-basic-button" title="Sort By">
-          <Dropdown.Item href="#/action-1" onClick={() => {
-            setSortText("Name")
-            sortText = "Name"
-            handleSort();
 
-          }}>Name</Dropdown.Item>
-          <Dropdown.Item href="#/action-2" onClick={() => {
-            setSortText("Year")
-            sortText = "Year"
-            handleSort();
-          }}>Year</Dropdown.Item>
-          <Dropdown.Item href="#/action-3" onClick={() => {
-            setSortText("Length")
-            sortText = "Length"
-            handleSort();
-          }}>Length</Dropdown.Item>
-        </DropdownButton>
-        <FormControl component="fieldset">
+        <FormControl
+          size="small"
+          style={{ marginLeft: "20px", minWidth:"100px" }}
+          variant="outlined"
+           
+        >
+          <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
+          <Select
+            label="Sort By"
+            onChange={({ target }) => {
+              console.log(target.value);
+              setSortText(target.value);
+              sortText = target.value;
+              handleSort();
+            }
+            }
+          >
+            <MenuItem value={"Name"}>Name</MenuItem>
+            <MenuItem value={"Year"}>Year</MenuItem>
+            <MenuItem value={"Length"}>Length</MenuItem>
+          </Select>
+        </FormControl>
+
+
+        {/* <FormControl component="fieldset">
           <FormGroup aria-label="position" row>
             <FormControlLabel
               defaultChecked
@@ -191,8 +184,9 @@ const Home = () => {
               }}
             />
           </FormGroup>
-        </FormControl>
-      </Grid>
+        </FormControl> */}
+
+      </div>
     );
   }
 
@@ -233,6 +227,7 @@ const Home = () => {
         setRows(data);
       })
       .catch((error) => {
+        // implement error code
         console.log(error);
       })
   }, []);
@@ -241,7 +236,7 @@ const Home = () => {
   return (
     <div>
       <Paper>
-        <Box p={4}>
+        {/* <Box p={4}>
           <Grid container direction="column" spacing={1}>
             <Grid item>
               <Typography component="h1" variant="h4"><b>Home</b></Typography>
@@ -262,7 +257,7 @@ const Home = () => {
 
             </Grid>
           </Grid>
-        </Box>
+        </Box> */}
         <div style={{ height: 400, width: '100%' }}>
           <MUIDataTable
             title={"Movie List"}

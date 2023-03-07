@@ -3,7 +3,6 @@
 import Axios from '../Axios';
 
 export const postUser = (newUser) => {
-  console.log(newUser)
     return Axios().post('/user', newUser);
   };
 
@@ -13,7 +12,6 @@ export const getUsers = () => {
 };
 
 export const validateUser = (credentials) => {
-  //console.log("user: " + newUser)
   return Axios().post('/user/validate', credentials);
 }
 

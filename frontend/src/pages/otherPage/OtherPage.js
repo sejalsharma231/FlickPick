@@ -59,11 +59,11 @@ const OtherPage = () => {
   const onSubmit = () => {
     getUsers()
       .then(({ data }) => {
-        //accessing the document markdown
-       console.log(data);
+        // accessing the document markdown
         setRows(data);
       })
       .catch((error) => {
+        // implement error code
         console.log(error);
       })
   };
@@ -163,12 +163,12 @@ export default OtherPage;
         .then((response) => {
           // handle success
           onSuccess();
-          console.log(response);
         })
         .catch((error) => {
           // handle error
           onError();
-          console.log(error);
+          // implement error code
+        console.log(error);
         });
       onSubmit();
     };
