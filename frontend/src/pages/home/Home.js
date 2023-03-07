@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { validateUser, addToUserWatchlist, removeFromUserWatchlist, getExistsInUserWatchlist, getUserWatchlist } from "../../api/user";
 import { get, update } from "lodash";
+import { useAuthUser } from "react-auth-kit";
 import {
   Box,
   Typography,
@@ -27,18 +28,15 @@ import MUIDataTable from "mui-datatables";
 
 
 const Home = () => {
+  const  auth  = useAuthUser();
   const [rows, setRows] = useState([]);
-
-
   const handleSearch = async () => {
-    console.log("Clicked " + inputText)
     searchMovies(inputText)
       .then(({ data }) => {
         setRows(data);
         console.log(rows)
       })
       .catch((error) => {
-        console.log("didn't work")
         console.log(error);
       })
   }
@@ -110,11 +108,12 @@ const Home = () => {
     },
     {
       name: "add_to_watchlist",
-      label: "Add to Watchlist",
+      label: "Watchlist",
       options: {
         filter: false,
         sort: false,
         empty: true,
+        display: auth() ? true : false,
         customBodyRender: (item, { currentTableData, rowIndex }) => {
           return (
             <WLButton currentTableData={currentTableData} rowIndex={rowIndex} ></WLButton>
@@ -124,79 +123,7 @@ const Home = () => {
     }
   ];
 
-  function getExists(userID, type, id) {
-    getExistsInUserWatchlist(userID, "watchlist", id)
-      .then(({ data }) => {
-        if (data.length == 1) {
-          console.log("remove");
-          return "Remove from Watchlist"
-        }
-        else {
-          console.log("add");
-          return "Add to Watchlist";
-        }
-
-      }).catch((error) => {
-        console.log(error);
-      })
-  }
-
-  const WLButton = ({ currentTableData, rowIndex }) => {
-    const [WLButtonText, setWLButtonText] = useState("Add to Watchlist")
-    //const [WLButtonText, setWLButtonText] = useState(false);
-    useEffect(() => {
-      getExistsInUserWatchlist(1, "watchlist", get(currentTableData[rowIndex], 'data')[6])
-        .then(({ data }) => {
-          if (data.length == 1) {
-            console.log("remove");
-            setWLButtonText("Remove from Watchlist")
-          }
-          else {
-            console.log("add");
-            setWLButtonText("Add to Watchlist");
-          }
-
-        }).catch((error) => {
-          console.log(error);
-        })
-    }
-    )
-
-    //console.log(getExists(1,"watchlist",get(currentTableData[rowIndex], 'data')[6]));
-    const updateWLButtonText = (text) => setWLButtonText(text)
-
-    //check if the movie already exists in the watchlist, then change functionality to delete in the beginning
-
-    // getExistsInUserWatchlist("1","watchlist",get(currentTableData[rowIndex], 'data')[6])
-    // .then(({ data }) => {
-    //   if(data.length == 1){
-    //   updateWLButtonText("Remove from Watchlist")
-    //   }
-    // })
-
-    //handle changes based on button click
-    function handleAddToWatchlist(data) {
-      if (WLButtonText == "Add to Watchlist") {
-        addToUserWatchlist("1", "watchlist", data[6]) //make user id dynamic
-        updateWLButtonText("Remove from Watchlist")
-
-      } else if (WLButtonText == "Remove from Watchlist") {
-        removeFromUserWatchlist("1", "watchlist", data[6])
-        updateWLButtonText("Add to Watchlist")
-      }
-    }
-
-    return (
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => handleAddToWatchlist(get(currentTableData[rowIndex], 'data'))}
-      >
-        {WLButtonText}
-      </Button>
-    )
-  }
-
+  
   const options = {
     selectableRowsHideCheckboxes: true,
     selectToolbarPlacement: 'none',
@@ -219,8 +146,6 @@ const Home = () => {
   }, []);
 
 
-
-
   return (
     <div>
       <Paper>
@@ -233,15 +158,6 @@ const Home = () => {
               <Typography variant="body2">
                 Welcome to the home page. Take a look around!
           </Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="body2">
-                <Link to="/otherPage"
-                  component={RouterLink}
-                >
-                  Add Users
-          </Link>
-              </Typography>
             </Grid>
           </Grid>
         </Box>
@@ -259,4 +175,56 @@ const Home = () => {
 };
 
 export default Home;
+
+const WLButton = ({ currentTableData, rowIndex }) => {
+  const auth = useAuthUser();
+
+  const [WLButtonText, setWLButtonText] = useState("Add to Watchlist")
+  //const [WLButtonText, setWLButtonText] = useState(false);
+  useEffect(() => {
+    if(auth()){
+    getExistsInUserWatchlist(auth().userID, get(currentTableData[rowIndex], 'data')[6])
+      .then(({ data }) => {
+        if (data.length == 1) {
+          setWLButtonText("Remove from Watchlist");
+        }
+        else {
+          setWLButtonText("Add to Watchlist");
+        }
+
+      }).catch((error) => {
+        console.log(error);
+      })
+    }
+  }
+  )
+
+  //console.log(getExists(1,"watchlist",get(currentTableData[rowIndex], 'data')[6]));
+  const updateWLButtonText = (text) => setWLButtonText(text)
+
+  //check if the movie already exists in the watchlist, then change functionality to delete in the beginning
+
+  //handle changes based on button click
+  const handleAddToWatchlist = (data) =>{
+    if (WLButtonText == "Add to Watchlist") {
+      addToUserWatchlist(auth().userID, data[6]) //make user id dynamic
+      updateWLButtonText("Remove from Watchlist")
+
+    } else if (WLButtonText == "Remove from Watchlist") {
+      removeFromUserWatchlist(auth().userID, data[6])
+      updateWLButtonText("Add to Watchlist")
+    }
+  }
+
+  return (
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={() => handleAddToWatchlist(get(currentTableData[rowIndex], 'data'))}
+    >
+      {WLButtonText}
+    </Button>
+  )
+}
+
 

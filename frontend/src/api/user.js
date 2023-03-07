@@ -23,20 +23,19 @@ export const getUserWatchlist = (userid)=>{
       userID: userid
     }});
 }
-export const getExistsInUserWatchlist = (userID,type,id)=>{
+export const getExistsInUserWatchlist = (userID,mid)=>{
   return Axios().get('/user/watchlist/check', {
     params: {
       userID: userID,
-      type: type,
-      id: id
+      mid: mid
     }});
 }
 
-export const addToUserWatchlist = (userid,type,id)=>{
-  return Axios().post('/user/watchlist/add', {userID : userid,type:type,id:id});
+export const addToUserWatchlist = (userid,mid)=>{
+  return Axios().post('/user/watchlist/add', {userID : userid,mid:mid});
 }
 
-export const removeFromUserWatchlist = (userid,type,id)=>{
-  return Axios().post('/user/watchlist/remove', {userID : userid,type:type,id:id});
+export const removeFromUserWatchlist = (userid,mid)=>{
+  return Axios().post('/user/watchlist/remove', {userID : userid,mid:mid});
 }
 
