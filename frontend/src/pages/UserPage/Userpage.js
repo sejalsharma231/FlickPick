@@ -80,9 +80,9 @@ const User = () => {
         getUserWatchlist(auth().userID)
             .then(({ data }) => {
                 setRows(data);
-                console.log(data)
             })
             .catch((error) => {
+                // implement error code
                 console.log(error);
             })
     }, []);
