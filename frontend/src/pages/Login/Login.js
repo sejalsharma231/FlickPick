@@ -70,11 +70,12 @@ const LoginComponent = () => {
     e.preventDefault();
     validateUser(credentials)
       .then((response) => {
+        console.log(response)
         signIn({
           token: response.data.token,
           expiresIn: 1,
           tokenType: "Bearer",
-          authState: { email: credentials.email }
+          authState: { userID: response.data.userID }
 
         });
         navigate("/");

@@ -19,7 +19,7 @@ connection.connect(function (err) {
 router.get('/', function (req, res, next) {
     // connection.connect();
 
-    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genre FROM movies';
+    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genre, Overview, IMDB_Rating, id, Poster_Link FROM movies';
     // console.log(queryString);
     connection.query(queryString, (error, results) => {
         if (error) {
@@ -35,7 +35,7 @@ router.get('/', function (req, res, next) {
 
 router.get('/search/data', function (req, res, next) {
     const movieName = req.query.name;
-    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genre FROM movies where Series_Title like \'%' + movieName + '%\'';
+    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genre, Overview, IMDB_Rating, id, Poster_Link FROM movies where Series_Title like \'%' + movieName + '%\'';
     console.log(queryString);
     connection.query(queryString, (error, results) => {
         if (error) {
