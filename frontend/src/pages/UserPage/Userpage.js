@@ -9,9 +9,10 @@ import { Link as RouterLink } from 'react-router-dom';
 import { Link } from '@mui/material';
 import MUIDataTable from "mui-datatables";
 import { getUserWatchlist } from '../../api/user';
-
+import { useAuthUser } from "react-auth-kit";
 
 const User = () => {
+    const auth = useAuthUser();
     const CustomToolbar = ({ displayData }) => {
         return (
             <Grid item>
@@ -38,7 +39,29 @@ const User = () => {
         {
             name: "Genre",
             label: "Genre",
-        }
+        },
+        {
+            name: "Overview",
+            label: "Summary",
+          },
+          {
+            name: "IMDB_Rating",
+            label: "IMDB Rating",
+          },
+          {
+            name: "id",
+            label: "id",
+            options: {
+            display: false,
+            }
+          },
+          {
+            name: "Postr_Link",
+            label: "Link",
+            options: {
+            display: false,
+            }
+          },
     ];
 
     const [rows, setRows] = useState([]);
@@ -54,7 +77,7 @@ const User = () => {
     };
 
     useEffect(() => {
-        getUserWatchlist(1)
+        getUserWatchlist(auth().userID)
             .then(({ data }) => {
                 setRows(data);
             })
@@ -66,16 +89,6 @@ const User = () => {
 
     return (
         <div>
-            <Grid item>
-                <Typography variant="body2">
-                    <Link to="/"
-                        component={RouterLink}
-                    >
-                        Logout
-                    </Link>
-                </Typography>
-
-            </Grid>
             <Paper>
                 <Box p={4}>
                     <Grid container direction="column" spacing={1}>

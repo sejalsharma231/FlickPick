@@ -14,9 +14,10 @@ import MenuItem from '@mui/material/MenuItem';
 import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
 import { useIsAuthenticated, useSignOut } from 'react-auth-kit';
 import { useNavigate } from "react-router-dom";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard'];
+const pages = [];
+const settings = [];
 
 function AppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -133,7 +134,9 @@ function AppBar() {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar>
+                    <AccountCircleIcon sx = {{color: 'white'}}/>
+                  </Avatar>
                 </IconButton>
               </Tooltip>
               <Menu
@@ -157,7 +160,13 @@ function AppBar() {
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>
                 ))}
-                <MenuItem key='Logout' onClick={signOut}>
+                <MenuItem key='Dashboard' onClick={() => navigate("/user")}>
+                    <Typography textAlign="center">{'Dashboard'}</Typography>
+                  </MenuItem>
+                <MenuItem key='Logout' onClick={() => {
+                  signOut()
+                  navigate("/")
+                }}>
                     <Typography textAlign="center">{'Logout'}</Typography>
                   </MenuItem>
               </Menu>

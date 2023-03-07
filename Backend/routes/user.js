@@ -43,10 +43,10 @@ router.post('/', function (req, res) {
       } else {
         console.log(results);
         const jwtToken = jwt.sign(
-          { email: email},
+          { email: email },
           "secret"
         )
-        res.json({message: "Welcome Back!", token: jwtToken});
+        res.json({ message: "Welcome Back!", token: jwtToken });
       }
     });
   } else {
@@ -67,10 +67,10 @@ router.get("/", function (req, res, next) {
   });
 });
 
-router.post("/validate", function (req, res ) {
-  const {email,password} = req.body;
+router.post("/validate", function (req, res) {
+  const { email, password } = req.body;
 
-  const isValidEmail= email !== undefined && typeof email == "string";
+  const isValidEmail = email !== undefined && typeof email == "string";
   const isValidPassword = password !== undefined && typeof password == "string";
 
   if (isValidEmail && isValidPassword) {
@@ -79,12 +79,13 @@ router.post("/validate", function (req, res ) {
       if (error) {
         res.send(error);
       } else {
+        //console.log(results[0].userID);
         if (results.length == 1) {
           const jwtToken = jwt.sign(
-            { email: results.email},
+            { userID: results[0].userID },
             "secret"
           )
-          res.json({message: "Welcome Back!", token: jwtToken});
+          res.json({ message: "Welcome Back!", token: jwtToken, userID: results[0].userID });
         } else {
           res.status(404).send("Email or password does not match");
         }
@@ -96,8 +97,7 @@ router.post("/validate", function (req, res ) {
 router.get('/watchlist', function (req, res, next) {
 
   const userID = req.query.userID
-  const queryString = `SELECT * FROM movies where id in (select id from Watchlist where userId = ${userID})`;
-  console.log(queryString);
+  const queryString = `SELECT * FROM movies where id in (select mid from Watchlist where userId = ${userID})`;
   connection.query(queryString, (error, results) => {
     if (error) {
       res.send(error);
@@ -107,26 +107,52 @@ router.get('/watchlist', function (req, res, next) {
   });
 });
 
+router.get('/watchlist/check', function (req, res, next) {
+  const userID = req.query.userID
+  const mid = req.query.mid
+  const queryString = `SELECT * FROM Watchlist WHERE userID = ${userID} and mid = ${mid}`;
+  connection.query(queryString, (error, results) => {
+    if (error) {
+      res.send(error);
+    } else {
+      res.send(results);
+    }
+  });
+});
 
-router.post('/watchlist', function (req, res, next) {
-
+router.post('/watchlist/add', function (req, res, next) {
   const {
     userID,
-    type,
-    id,
+    mid,
   } = req.body;
-  console.log(userID);
 
   // add validators to check that everything is a string
 
-  const queryString = `INSERT into Watchlist (userID,type,id) VALUES ("${userID}", "${type}", "${id}")`;
+  const queryString = `INSERT into Watchlist (userID,mid) VALUES (${userID}, ${mid})`;
 
-  console.log(queryString);
   connection.query(queryString, (error, results) => {
     if (error) {
       res.status(400).send('Database could not insert into watchlist');
     } else {
-      res.send("Added new wtachlist entry");
+      res.send("Added new watchlist entry");
+    }
+  });
+});
+
+router.post('/watchlist/remove', function (req, res, next) {
+  const {
+    userID,
+    mid,
+  } = req.body;
+  // add validators to check that everything is a string
+
+  const queryString = `DELETE from Watchlist WHERE userID = ${userID} and mid = ${mid}`;
+
+  connection.query(queryString, (error, results) => {
+    if (error) {
+      res.status(400).send('Database could not delete from watchlist');
+    } else {
+      res.send("Deleted selected watchlist entry");
     }
   });
 });
