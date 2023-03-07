@@ -21,10 +21,6 @@ import theme from "./theme";
 
 
 function App() {
-  // const [token, setToken] = useState();
-  // if(!token) {
-  //   return <Login setToken={setToken} />
-  // }
 
   return (
     <ThemeProvider theme={theme}>

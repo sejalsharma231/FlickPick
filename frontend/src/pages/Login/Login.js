@@ -73,7 +73,7 @@ const LoginComponent = () => {
         console.log(response)
         signIn({
           token: response.data.token,
-          expiresIn: 1,
+          expiresIn: 10,
           tokenType: "Bearer",
           authState: { userID: response.data.userID }
 

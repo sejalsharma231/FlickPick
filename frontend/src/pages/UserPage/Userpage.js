@@ -13,12 +13,12 @@ import { useAuthUser } from "react-auth-kit";
 
 const User = () => {
     const auth = useAuthUser();
-    const CustomToolbar = ({ displayData }) => {
+    const CustomToolbar = () => {
         return (
             <Grid item>
-                <Typography variant="body2">
+                {/* <Typography variant="body2">
                     Welcome to the User page
-                </Typography>
+                </Typography> */}
             </Grid>
         );
     }
