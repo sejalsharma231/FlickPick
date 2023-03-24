@@ -32,9 +32,7 @@ router.post('/', function (req, res) {
   const isValidEmail = email !== undefined && typeof email == "string";
 
   if (isValidFirstName && isValidLastName && isValidPassword && isValidEmail) {
-    const uuid = uuidv4();
-
-    const queryString = `INSERT into users (uuid,firstName,lastName, password, email) VALUES ("${uuid}", "${firstName}", "${lastName}", "${password}", "${email}" )`;
+    const queryString = `INSERT into users (firstName,lastName, password, email) VALUES ( "${firstName}", "${lastName}", "${password}", "${email}" )`;
 
     console.log(queryString);
     connection.query(queryString, (error, results) => {
@@ -97,7 +95,7 @@ router.post("/validate", function (req, res) {
 router.get('/watchlist', function (req, res, next) {
 
   const userID = req.query.userID
-  const queryString = `SELECT * FROM movies where id in (select mid from Watchlist where userId = ${userID})`;
+  const queryString = `SELECT * FROM movies where Movie_ID in (select Movie_ID from Watchlist where userID = ${userID})`;
   connection.query(queryString, (error, results) => {
     if (error) {
       res.send(error);
@@ -110,7 +108,7 @@ router.get('/watchlist', function (req, res, next) {
 router.get('/watchlist/check', function (req, res, next) {
   const userID = req.query.userID
   const mid = req.query.mid
-  const queryString = `SELECT * FROM Watchlist WHERE userID = ${userID} and mid = ${mid}`;
+  const queryString = `SELECT * FROM watchlist WHERE userID = ${userID} and Movie_ID = ${mid}`;
   connection.query(queryString, (error, results) => {
     if (error) {
       res.send(error);
@@ -127,8 +125,8 @@ router.post('/watchlist/add', function (req, res, next) {
   } = req.body;
 
   // add validators to check that everything is a string
-
-  const queryString = `INSERT into Watchlist (userID,mid) VALUES (${userID}, ${mid})`;
+  
+  const queryString = `INSERT into watchlist (userID,Movie_ID) VALUES (${userID}, ${mid})`;
 
   connection.query(queryString, (error, results) => {
     if (error) {
@@ -139,14 +137,14 @@ router.post('/watchlist/add', function (req, res, next) {
   });
 });
 
-router.post('/watchlist/remove', function (req, res, next) {
+router.get('/watchlist/remove', function (req, res, next) {
   const {
     userID,
     mid,
   } = req.body;
   // add validators to check that everything is a string
 
-  const queryString = `DELETE from Watchlist WHERE userID = ${userID} and mid = ${mid}`;
+  const queryString = `DELETE from watchlist WHERE userID = ${userID} and Movie_ID = ${mid}`;
 
   connection.query(queryString, (error, results) => {
     if (error) {
