@@ -17,35 +17,27 @@ connection.connect(function (err) {
 
 // returns all the users
 router.get('/', function (req, res, next) {
-    // connection.connect();
-
-    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genre, Overview, IMDB_Rating, id, Poster_Link FROM movies';
-    // console.log(queryString);
+    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies';
     connection.query(queryString, (error, results) => {
         if (error) {
             res.send(error);
-            // connection.end();
         } else {
-            //console.log(results);
             res.send(results);
         }
     });
-    // connection.end();
 });
 
 router.get('/search/data', function (req, res, next) {
     const movieName = req.query.name;
-    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genre, Overview, IMDB_Rating, id, Poster_Link FROM movies where Series_Title like \'%' + movieName + '%\'';
+    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + movieName + '%\'';
     console.log(queryString);
     connection.query(queryString, (error, results) => {
         if (error) {
             res.send(error);
-            // connection.end();
         } else {
             res.send(results);
         }
     });
-    // connection.end();
 });
 
 router.get('/sort/data', function (req, res, next) {
@@ -58,17 +50,15 @@ router.get('/sort/data', function (req, res, next) {
     } else {
         sortField = 'Runtime'
     }
-    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genre, Overview, IMDB_Rating, id, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' order by ' + sortField;
+    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' order by ' + sortField;
     console.log(queryString);
     connection.query(queryString, (error, results) => {
         if (error) {
             res.send(error);
-            // connection.end();
         } else {
             res.send(results);
         }
     });
-    // connection.end();
 });
 
 router.get('/filter/data', function (req, res, next) {
@@ -104,17 +94,40 @@ router.get('/filter/data', function (req, res, next) {
         append(filterList[i], (i == 0))
     }
     partialQuery += ')'
-    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genre, Overview, IMDB_Rating, id, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' ' + partialQuery;
+    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' ' + partialQuery;
     console.log(queryString);
     connection.query(queryString, (error, results) => {
         if (error) {
             res.send(error);
-            // connection.end();
         } else {
             res.send(results);
         }
     });
-    // connection.end();
+});
+
+
+router.get('/recommend', function (req, res, next) {
+    const movieName = req.query.movieName;
+    const isValidMovieName = movieName !== undefined && typeof movieName == "string";
+    if (isValidMovieName) {
+        const queryString = 'SELECT m.Series_Title, m.Released_Year,m.Overview, input_movies.Released_Year, m.Genres, input_movies.Genres, d.Director, m.IMDB_Rating, SUM(CASE WHEN m.Genres = input_movies.Genres THEN 2 ' +
+            'WHEN m.Genres like input_movies.Genres THEN 1 ELSE 0 END' +
+            ' + CASE WHEN (Select Director from directors as d where d.Movie_ID = m.Movie_ID) = (Select Director from directors as d where d.Movie_ID = input_movies.Movie_ID) THEN 1 ELSE 0 END'
+            + '+ CASE WHEN EXISTS (Select Star as s from actors as a where a.Movie_ID = m.Movie_ID and a.Star IN (SELECT Star from actors as a2 where a2.Movie_ID = input_movies.Movie_ID )) THEN 1 ELSE 0 END'
+            + '+ CASE WHEN ABS(m.Released_Year - input_movies.Released_Year) <= 10 THEN 1 ELSE 0 END) AS similarity_score ' +
+            'FROM directors as d, movies As m , (SELECT * FROM movies WHERE Series_Title = "' + movieName + '") As input_movies ' +
+            'WHERE m.Series_Title <> "' + movieName + '" and m.Movie_ID = d.Movie_ID GROUP BY m.Series_Title, m.Released_Year,m.Overview, input_movies.Released_Year, m.Genres, input_movies.Genres, d.Director, m.IMDB_Rating ' +
+            'HAVING similarity_score > 0 Order by similarity_score DESC, m.IMDB_Rating DESC LIMIT 10;'
+        connection.query(queryString, (error, results) => {
+            if (error) {
+                res.send(error);
+            } else {
+                res.send(results);
+            }
+        });
+    } else {
+        res.status(400).send("Invalid Input!");
+    }
 });
 
 module.exports = router;

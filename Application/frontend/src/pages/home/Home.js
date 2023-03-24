@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link as RouterLink, useNavigate } from "react-router-dom"
-import { validateUser, addToUserWatchlist, removeFromUserWatchlist, getExistsInUserWatchlist, getUserWatchlist } from "../../api/user";
+import { Link as RouterLink, useNavigate, Navigate } from "react-router-dom"
+import { validateUser, addToUserWatchlist, removeFromUserWatchlist, getExistsInUserWatchlist, getUserWatchlist, recommendLikeThis } from "../../api/user";
 import { get, update } from "lodash";
 import { useAuthUser } from "react-auth-kit";
 import { Dropdown, DropdownButton } from 'react-bootstrap';
@@ -23,7 +23,7 @@ import MUIDataTable from "mui-datatables";
 import { MenuItem } from "@mui/material";
 
 const Home = () => {
-  const  auth  = useAuthUser();
+  const auth = useAuthUser();
   const [rows, setRows] = useState([]);
   const [inputText, setInputText] = useState('');
   const [sort, setSortText] = useState("");
@@ -105,9 +105,9 @@ const Home = () => {
 
         <FormControl
           size="small"
-          style={{ marginLeft: "20px", minWidth:"100px" }}
+          style={{ marginLeft: "20px", minWidth: "100px" }}
           variant="outlined"
-           
+
         >
           <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
           <Select
@@ -219,7 +219,7 @@ const Home = () => {
       }
     },
     {
-      name: "Genre",
+      name: "Genres",
       label: "Genre",
     },
     {
@@ -231,8 +231,8 @@ const Home = () => {
       label: "IMDB Rating",
     },
     {
-      name: "id",
-      label: "id",
+      name: "Movie_ID",
+      label: "Movie_ID",
       options: {
         display: false,
       }
@@ -258,10 +258,24 @@ const Home = () => {
           )
         },
       }
+    },
+    {
+      name: "Recommend",
+      label: "Recommend",
+      options: {
+        filter: false,
+        sort: false,
+        empty: true,
+        customBodyRender: (item, { currentTableData, rowIndex }) => {
+          return (
+            <WLButton2 currentTableData={currentTableData} rowIndex={rowIndex} ></WLButton2>
+          )
+        },
+      }
     }
   ];
 
-  
+
   const options = {
     selectableRowsHideCheckboxes: true,
     selectToolbarPlacement: 'none',
@@ -276,6 +290,7 @@ const Home = () => {
   useEffect(() => {
     getMovies()
       .then(({ data }) => {
+        console.log(data)
         setRows(data);
       })
       .catch((error) => {
@@ -321,19 +336,19 @@ const WLButton = ({ currentTableData, rowIndex }) => {
   const [WLButtonText, setWLButtonText] = useState("Add to Watchlist")
   //const [WLButtonText, setWLButtonText] = useState(false);
   useEffect(() => {
-    if(auth()){
-    getExistsInUserWatchlist(auth().userID, get(currentTableData[rowIndex], 'data')[6])
-      .then(({ data }) => {
-        if (data.length == 1) {
-          setWLButtonText("Remove from Watchlist");
-        }
-        else {
-          setWLButtonText("Add to Watchlist");
-        }
+    if (auth()) {
+      getExistsInUserWatchlist(auth().userID, get(currentTableData[rowIndex], 'data')[6])
+        .then(({ data }) => {
+          if (data.length == 1) {
+            setWLButtonText("Remove from Watchlist");
+          }
+          else {
+            setWLButtonText("Add to Watchlist");
+          }
 
-      }).catch((error) => {
-        console.log(error);
-      })
+        }).catch((error) => {
+          console.log(error);
+        })
     }
   }
   )
@@ -344,7 +359,7 @@ const WLButton = ({ currentTableData, rowIndex }) => {
   //check if the movie already exists in the watchlist, then change functionality to delete in the beginning
 
   //handle changes based on button click
-  const handleAddToWatchlist = (data) =>{
+  const handleAddToWatchlist = (data) => {
     if (WLButtonText == "Add to Watchlist") {
       addToUserWatchlist(auth().userID, data[6]) //make user id dynamic
       updateWLButtonText("Remove from Watchlist")
@@ -362,6 +377,32 @@ const WLButton = ({ currentTableData, rowIndex }) => {
       onClick={() => handleAddToWatchlist(get(currentTableData[rowIndex], 'data'))}
     >
       {WLButtonText}
+    </Button>
+  )
+}
+
+const WLButton2 = ({ currentTableData, rowIndex }) => {
+  const auth = useAuthUser();
+  const navigate = useNavigate();
+  //handle changes based on button click
+  const handleRecommend = (data) => {
+    if (data[0]) {
+      navigate("/recommend", {
+        state: {
+          movieName: data[0]
+        }
+      });
+    }
+
+  }
+
+  return (
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={() => handleRecommend(get(currentTableData[rowIndex], 'data'))}
+    >
+      Recommend
     </Button>
   )
 }
