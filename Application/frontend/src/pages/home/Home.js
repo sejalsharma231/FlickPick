@@ -21,46 +21,57 @@ import {
 import { getMovies, searchMovies, sortMovies, filterMovies } from "../../api/movies"
 import MUIDataTable from "mui-datatables";
 import { MenuItem } from "@mui/material";
+import { getTouchRippleUtilityClass } from "@mui/material";
 
 const Home = () => {
   const auth = useAuthUser();
   const [rows, setRows] = useState([]);
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState("");
   const [sort, setSortText] = useState("");
   const [checked, setChecked] = useState(true);
   var sortText = ""
-  var Comedy = true
-  var Drama = true
-  var Action = true
-  var Romance = true
+  // const [ComedyState, setComedyState] = useState(true)
+  // const [DramaState, setDramaState] = useState(true)
+  // const [ActionState, setActionState] = useState(true)
+  // const [RomanceState, setRomanceState] = useState(true)
+  const [filterItems, setFilterItems] = useState({ Comedy: true, Action: true, Drama: true, Romance: true })
+  useEffect(() => {
+    handleFilter()
+  }, [filterItems]);
 
-  const toggleComedy = () => {
-    Comedy = !Comedy
-  }
-  const toggleAction = () => {
-    Action = !Action
-  }
-  const toggleDrama = () => {
-    Drama = !Drama
-  }
-  const toggleRomance = () => {
-    Romance = !Romance
-  }
+  // const toggleComedy = () => {
+  //   Comedy = !Comedy 
+  // }
+  // const toggleAction = () => {
+  //   Action = !Action
+  // }
+  // const toggleDrama = () => {
+  //   Drama = !Drama
+  // }
+  // const toggleRomance = () => {
+  //   Romance = !Romance
+  // }
 
-  const handleFilter = async () => {
+  const handleFilter = () => {
     var filterList = []
-    if (Comedy) {
+    console.log("list as of now: " + filterList)
+    if (filterItems.Comedy) {
+      console.log("Comedy being added")
       filterList.push("Comedy")
     }
-    if (Drama) {
+    if (filterItems.Drama) {
+      console.log("Drama being added")
       filterList.push("Drama")
     }
-    if (Romance) {
+    if (filterItems.Romance) {
+      console.log("Romance being added")
       filterList.push("Romance")
     }
-    if (Action) {
+    if (filterItems.Action) {
+      console.log("Action being added")
       filterList.push("Action")
     }
+    console.log("final list: " + filterList)
     filterMovies(filterList, sortText, inputText).then(({ data }) => {
       setRows(data);
     })
@@ -127,66 +138,81 @@ const Home = () => {
         </FormControl>
 
 
-        {/* <FormControl component="fieldset">
+        <FormControl component="fieldset">
           <FormGroup aria-label="position" row>
             <FormControlLabel
-              defaultChecked
               value="end"
               control={
                 <Checkbox
                   defaultChecked={checked}
-                  onChange={() => {
-                    toggleComedy();
-                    handleFilter();
+                  //checked={filterItems.Comedy}
+                  name="Comedy"
+                  onChange={(e) => {
+                    setFilterItems({ ...filterItems, [e.target.name]: e.target.checked });
+                    //handleFilter();
                   }}
                 />}
               label="Comedy"
               labelPlacement="end"
-
             />
             <FormControlLabel
-              defaultChecked
+              //defaultChecked
               value="end"
               control={
                 <Checkbox
                   defaultChecked={checked}
+                  //checked={filterItems.Drama}
+                  name="Drama"
+                  onChange={(e) => {
+                    setFilterItems({ ...filterItems, [e.target.name]: e.target.checked });
+                    //handleFilter();
+                  }}
                 />}
               label="Drama"
               labelPlacement="end"
-              onChange={() => {
-                toggleDrama();
-                handleFilter();
-              }}
+
             />
             <FormControlLabel
-              defaultChecked
+              //defaultChecked
               value="end"
               control={
                 <Checkbox
                   defaultChecked={checked}
+                  //checked={filterItems.Action}
+                  name="Action"
+                  onChange={(e) => {
+                    setFilterItems({ ...filterItems, [e.target.name]: e.target.checked });
+                    //handleFilter();
+                  }}
                 />}
               label="Action"
               labelPlacement="end"
-              onChange={() => {
-                toggleAction();
-                handleFilter();
-              }}
+            // onChange={(e) => {
+            //   setActionState(e.currentTarget.checked);
+            //   handleFilter();
+            // }}
             />
             <FormControlLabel
               value="end"
               control={
                 <Checkbox
                   defaultChecked={checked}
+                  //checked={filterItems.Romance}
+                  name="Romance"
+                  onChange={(e) => {
+                    setFilterItems({ ...filterItems, [e.target.name]: e.target.checked })
+                    //handleFilter();
+                  }}
                 />}
               label="Romance"
               labelPlacement="end"
-              onChange={() => {
-                toggleRomance();
-                handleFilter();
-              }}
+            // onChange={(e) => {
+            //   setRomanceState(e.currentTarget.checked);
+            //   handleFilter();
+            // }}
             />
           </FormGroup>
-        </FormControl> */}
+        </FormControl>
 
       </div>
     );

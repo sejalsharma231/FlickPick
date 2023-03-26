@@ -17,7 +17,10 @@ connection.connect(function (err) {
 
 // returns all the users
 router.get('/', function (req, res, next) {
+    // connection.connect();
+
     const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies';
+    // console.log(queryString);
     connection.query(queryString, (error, results) => {
         if (error) {
             res.send(error);
@@ -62,40 +65,24 @@ router.get('/sort/data', function (req, res, next) {
 });
 
 router.get('/filter/data', function (req, res, next) {
-    var List = req.query.list;
-    console.log("list: " + List)
+    var List = req.query.list.split(",")
     var sortField = req.query.sort;
     var searchField = req.query.search;
-    var partialQuery = ""
-    var filterList = []
-    console.log("list length: " + List.length)
-    while (List.length > 0) {
-        if (List.indexOf(',') == -1) {
-            filterList.push(List)
-            console.log("last push : " + List)
-            List = ""
-            console.log("new list : " + List)
-        } else {
-            filterList.push(List.substring(0, List.indexOf(',')))
-            console.log("pushed to filter : " + List.substring(0, List.indexOf(',')))
-            List = List.substring(List.indexOf(',') + 1)
-            console.log("new list : " + List)
+    if (List.length > 0) {
+        var partialQuery = "SELECT * from genres where Genres in ("
+        for (let i = 0; i < List.length; i++) {
+            partialQuery += '\'' + List[i] + '\''
+            if (i != List.length - 1) {
+                partialQuery += ","
+            }
         }
+        partialQuery += ")"
     }
-    console.log(filterList)
-    function append(text, bool) {
-        if (bool) {
-            partialQuery += 'and (Genre like \'%' + text + '%\''
-        } else {
-            partialQuery += 'or Genre like \'%' + text + '%\''
-        }
+    var queryString = 'SELECT distinct Series_Title, Released_Year, Runtime, movies.Genres, Overview, IMDB_Rating, movies.Movie_ID, Poster_Link FROM movies inner join (' + partialQuery + ') as A where movies.Movie_ID = A.Movie_ID and Series_Title like \'%' + searchField + '%\''
+    if (sortField != "") {
+        queryString += " order by " + sortField
     }
-    for (var i = 0; i < filterList.length; i++) {
-        append(filterList[i], (i == 0))
-    }
-    partialQuery += ')'
-    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' ' + partialQuery;
-    console.log(queryString);
+    console.log("final query: " + queryString)
     connection.query(queryString, (error, results) => {
         if (error) {
             res.send(error);
