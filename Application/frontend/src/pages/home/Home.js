@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link as RouterLink, useNavigate } from "react-router-dom"
-import { validateUser, addToUserWatchlist, removeFromUserWatchlist, getExistsInUserWatchlist, getUserWatchlist } from "../../api/user";
+import { Link as RouterLink, useNavigate, Navigate } from "react-router-dom"
+import { validateUser, addToUserWatchlist, removeFromUserWatchlist, getExistsInUserWatchlist, getUserWatchlist, recommendLikeThis } from "../../api/user";
 import { get, update } from "lodash";
 import { useAuthUser } from "react-auth-kit";
 import { Dropdown, DropdownButton } from 'react-bootstrap';
@@ -258,7 +258,7 @@ const Home = () => {
     },
     {
       name: "Movie_ID",
-      label: "id",
+      label: "Movie_ID",
       options: {
         display: false,
       }
@@ -284,6 +284,20 @@ const Home = () => {
           )
         },
       }
+    },
+    {
+      name: "Recommend",
+      label: "Recommend",
+      options: {
+        filter: false,
+        sort: false,
+        empty: true,
+        customBodyRender: (item, { currentTableData, rowIndex }) => {
+          return (
+            <WLButton2 currentTableData={currentTableData} rowIndex={rowIndex} ></WLButton2>
+          )
+        },
+      }
     }
   ];
 
@@ -302,6 +316,7 @@ const Home = () => {
   useEffect(() => {
     getMovies()
       .then(({ data }) => {
+        console.log(data)
         setRows(data);
       })
       .catch((error) => {
@@ -388,6 +403,32 @@ const WLButton = ({ currentTableData, rowIndex }) => {
       onClick={() => handleAddToWatchlist(get(currentTableData[rowIndex], 'data'))}
     >
       {WLButtonText}
+    </Button>
+  )
+}
+
+const WLButton2 = ({ currentTableData, rowIndex }) => {
+  const auth = useAuthUser();
+  const navigate = useNavigate();
+  //handle changes based on button click
+  const handleRecommend = (data) => {
+    if (data[0]) {
+      navigate("/recommend", {
+        state: {
+          movieName: data[0]
+        }
+      });
+    }
+
+  }
+
+  return (
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={() => handleRecommend(get(currentTableData[rowIndex], 'data'))}
+    >
+      Recommend
     </Button>
   )
 }

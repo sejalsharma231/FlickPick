@@ -3,16 +3,24 @@ import {
     Box,
     Grid,
     Paper,
-    Typography
+    Typography,
+    CircularProgress
 } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
-import { Link } from '@mui/material';
+import { useLocation} from 'react-router-dom';
 import MUIDataTable from "mui-datatables";
-import { getUserWatchlist } from '../../api/user';
+import { recommendLikeThis } from '../../api/user';
 import { useAuthUser } from "react-auth-kit";
 
-const User = () => {
+const Recommender = () => {
     const auth = useAuthUser();
+    const location = useLocation();
+
+    const [loading, isloading] = useState(true);
+
+    // get movieName
+    const movieName = location.state.movieName;
+
+
     const CustomToolbar = () => {
         return (
             <Grid item>
@@ -33,10 +41,6 @@ const User = () => {
             label: "Year",
         },
         {
-            name: "Runtime",
-            label: "Length",
-        },
-        {
             name: "Genres",
             label: "Genre",
         },
@@ -47,20 +51,6 @@ const User = () => {
           {
             name: "IMDB_Rating",
             label: "IMDB Rating",
-          },
-          {
-            name: "Movie_ID",
-            label: "Movie_ID",
-            options: {
-            display: false,
-            }
-          },
-          {
-            name: "Postr_Link",
-            label: "Link",
-            options: {
-            display: false,
-            }
           },
     ];
 
@@ -77,9 +67,10 @@ const User = () => {
     };
 
     useEffect(() => {
-        getUserWatchlist(auth().userID)
+        recommendLikeThis(movieName)
             .then(({ data }) => {
                 setRows(data);
+                isloading(false);
             })
             .catch((error) => {
                 // implement error code
@@ -89,30 +80,43 @@ const User = () => {
 
     return (
         <div>
-            <Paper>
-                <Box p={4}>
-                    <Grid container direction="column" spacing={1}>
+                    {loading ? (
+                        <Box p={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+                        <CircularProgress />
+                      </Box>
+
+                    ) : (
+                        <Paper>
+
+                        <Box p={4}>
+
+                        <Grid container direction="column" spacing={1}>
                         <Grid item>
-                            <Typography component="h1" variant="h4"><b>User</b></Typography>
-                        </Grid>
-                        <Grid item>
-                            <Typography variant="body2">
-                                Welcome to the User page
+                            <Typography component="h1" variant="h4"><b>Movies Similar to {movieName}</b></Typography>
+                                </Grid>
+                        <Grid item pb ={2}>
+                            <Typography variant="body1">
+                                Welcome to the Recommender section. Here is a list of movies recommnded using a combinaion of genres, directors, actors and release date. A similariity score determines which movies will be displayed here.
+            
                             </Typography>
                         </Grid>
                     </Grid>
-                </Box>
+                
                 <div style={{ height: 400, width: '100%' }}>
                     <MUIDataTable
-                        title={"Watch List"} // only print if in the watchlist
+                        title = "Movies List"
                         data={rows}
                         columns={columns}
                         options={options}
                     />
                 </div>
-            </Paper>
+                </Box>
+                </Paper>
+
+                    )}
+            
         </div>
     );
 };
 
-export default User;
+export default Recommender;
