@@ -1,5 +1,5 @@
 import { Box } from '@mui/system';
-import React, { useState } from 'react';
+import React from 'react';
 import {
   BrowserRouter,
   Navigate,
@@ -9,17 +9,18 @@ import {
 
 // pages
 import Home from './pages/home/Home.js';
-import OtherPage from './pages/otherPage/OtherPage'
 import User from './pages/UserPage/Userpage.js';
 import Recommend from './pages/Recommend/Recommend.js';
+import Trending from './pages/Trending/Trending.js';
+import Login from './pages/Login/Login.js';
 
 // components
 import AppBar from './components/AppBar/AppBar.js';
-import Login from './pages/Login/Login.js';
 
 import { ThemeProvider } from '@mui/material/styles';
 import theme from "./theme";
 
+import { SocketProvider } from './context/SocketContext';
 
 function App() {
 
@@ -28,11 +29,11 @@ function App() {
       <div >
         <BrowserRouter>
           <Routes>
-            <Route exact path="/" element={<div><AppBar /><Home /></div>} />
-            <Route exact path="/user" element={<div><AppBar /><User /></div>}/>
-            <Route exact path="/otherpage" element={<div><AppBar /><OtherPage /></div>} />
+            <Route exact path="/" element={<div><AppBar /><SocketProvider>< Home /></SocketProvider></div>} />
+            <Route exact path="/user" element={<div><AppBar /><User /></div>} />
             <Route exact path="/recommend" element={<div><AppBar /><Recommend /></div>} />
             <Route exact path="/login" element={<Login />} />
+            <Route exact path="/trending" element={<SocketProvider><AppBar /><Trending /></SocketProvider>} />
           </Routes>
         </BrowserRouter>
       </div>

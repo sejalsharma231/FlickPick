@@ -34,17 +34,15 @@ router.post('/', function (req, res) {
   if (isValidFirstName && isValidLastName && isValidPassword && isValidEmail) {
     const queryString = `INSERT into users (firstName,lastName, password, email) VALUES ( "${firstName}", "${lastName}", "${password}", "${email}" )`;
 
-    console.log(queryString);
     connection.query(queryString, (error, results) => {
       if (error) {
         res.status(400).send("Database could not insert the user");
       } else {
-        console.log(results);
         const jwtToken = jwt.sign(
-          { email: email },
+          { userID: results.insertId },
           "secret"
         )
-        res.json({ message: "Welcome Back!", token: jwtToken });
+        res.json({ message: "Hey New User!", token: jwtToken, userID: results.insertId });
       }
     });
   } else {
@@ -77,7 +75,6 @@ router.post("/validate", function (req, res) {
       if (error) {
         res.send(error);
       } else {
-        //console.log(results[0].userID);
         if (results.length == 1) {
           const jwtToken = jwt.sign(
             { userID: results[0].userID },
@@ -137,7 +134,7 @@ router.post('/watchlist/add', function (req, res, next) {
   });
 });
 
-router.get('/watchlist/remove', function (req, res, next) {
+router.post('/watchlist/remove', function (req, res, next) {
   const {
     userID,
     mid,
