@@ -28,6 +28,7 @@ router.get('/', function (req, res, next) {
     });
 });
 
+// returns top trending movies
 router.get('/trending', function (req, res, next) {
     const queryString = `SELECT * from (SELECT Movie_ID, count(*) FROM watchlist GROUP BY Movie_ID ORDER BY count(*) desc) as a join movies on a.Movie_ID = movies.Movie_ID LIMIT 20`;
     connection.query(queryString, (error, results) => {
@@ -41,19 +42,32 @@ router.get('/trending', function (req, res, next) {
 
 router.get('/search/data', function (req, res, next) {
     const movieName = req.query.name;
-    const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + movieName + '%\'';
-    connection.query(queryString, (error, results) => {
-        if (error) {
-            res.send(error);
-        } else {
-            res.send(results);
-        }
-    });
+
+    const isValidMovieName = movieName !== undefined && typeof movieName == "string";
+
+    if (isValidMovieName) {
+        const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + movieName + '%\'';
+        connection.query(queryString, (error, results) => {
+            if (error) {
+                res.send(error);
+            } else {
+                res.send(results);
+            }
+        });
+    } else {
+        res.status(400).send("Invalid Input!");
+    };
 });
 
 router.get('/sort/data', function (req, res, next) {
     var sortField = req.query.sort;
     var searchField = req.query.search;
+
+    const isValidSortField = sortField !== undefined && typeof sortField == "string";
+    const isValidSearchField = searchField !== undefined && typeof searchField == "string";
+
+    if (isValidSortField && isValidSearchField) {
+
     var queryString = ""
     if (sortField == 'Name') {
         sortField = 'Series_Title'
@@ -65,41 +79,62 @@ router.get('/sort/data', function (req, res, next) {
         sortField = 'Runtime'
         queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' order by ABS(Runtime)'
     }
-    console.log(queryString)
     connection.query(queryString, (error, results) => {
         if (error) {
             res.send(error);
         } else {
-            res.send(results);
+            sortField = 'Runtime'
         }
-    });
+        const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' order by ' + sortField;
+        connection.query(queryString, (error, results) => {
+            if (error) {
+                res.send(error);
+            } else {
+                res.send(results);
+            }
+        });
+    } else {
+        res.status(400).send("Invalid Input!");
+    };
 });
 
 router.get('/filter/data', function (req, res, next) {
     var List = req.query.list.split(",")
     var sortField = req.query.sort;
     var searchField = req.query.search;
-    if (List.length > 0) {
-        var partialQuery = "SELECT * from genres where Genres in ("
-        for (let i = 0; i < List.length; i++) {
-            partialQuery += '\'' + List[i] + '\''
-            if (i != List.length - 1) {
-                partialQuery += ","
+
+    var sortField = req.query.sort;
+    var searchField = req.query.search;
+
+    const isValidSortField = sortField !== undefined && typeof sortField == "string";
+    const isValidSearchField = searchField !== undefined && typeof searchField == "string";
+
+    if (isValidSortField && isValidSearchField) {
+
+        if (List.length > 0) {
+            var partialQuery = "SELECT * from genres where Genres in ("
+            for (let i = 0; i < List.length; i++) {
+                partialQuery += '\'' + List[i] + '\''
+                if (i != List.length - 1) {
+                    partialQuery += ","
+                }
             }
+            partialQuery += ")"
         }
-        partialQuery += ")"
-    }
-    var queryString = 'SELECT distinct Series_Title, Released_Year, Runtime, movies.Genres, Overview, IMDB_Rating, movies.Movie_ID, Poster_Link FROM movies inner join (' + partialQuery + ') as A where movies.Movie_ID = A.Movie_ID and Series_Title like \'%' + searchField + '%\''
-    if (sortField != "") {
-        queryString += " order by " + sortField
-    }
-    connection.query(queryString, (error, results) => {
-        if (error) {
-            res.send(error);
-        } else {
-            res.send(results);
+        var queryString = 'SELECT distinct Series_Title, Released_Year, Runtime, movies.Genres, Overview, IMDB_Rating, movies.Movie_ID, Poster_Link FROM movies inner join (' + partialQuery + ') as A where movies.Movie_ID = A.Movie_ID and Series_Title like \'%' + searchField + '%\''
+        if (sortField != "") {
+            queryString += " order by " + sortField
         }
-    });
+        connection.query(queryString, (error, results) => {
+            if (error) {
+                res.send(error);
+            } else {
+                res.send(results);
+            }
+        });
+    } else {
+        res.status(400).send("Invalid Input!");
+    };
 });
 
 
