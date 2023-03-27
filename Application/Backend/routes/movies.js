@@ -17,10 +17,8 @@ connection.connect(function (err) {
 
 // returns all the movies
 router.get('/', function (req, res, next) {
-    // connection.connect();
 
     const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies';
-    // console.log(queryString);
     connection.query(queryString, (error, results) => {
         if (error) {
             res.send(error);
@@ -44,7 +42,6 @@ router.get('/trending', function (req, res, next) {
 router.get('/search/data', function (req, res, next) {
     const movieName = req.query.name;
     const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + movieName + '%\'';
-    console.log(queryString);
     connection.query(queryString, (error, results) => {
         if (error) {
             res.send(error);
@@ -65,7 +62,6 @@ router.get('/sort/data', function (req, res, next) {
         sortField = 'Runtime'
     }
     const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' order by ' + sortField;
-    console.log(queryString);
     connection.query(queryString, (error, results) => {
         if (error) {
             res.send(error);
@@ -93,7 +89,6 @@ router.get('/filter/data', function (req, res, next) {
     if (sortField != "") {
         queryString += " order by " + sortField
     }
-    console.log("final query: " + queryString)
     connection.query(queryString, (error, results) => {
         if (error) {
             res.send(error);

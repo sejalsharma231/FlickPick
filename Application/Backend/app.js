@@ -27,7 +27,6 @@ app.use('/movies', moviesRouter);
 
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
 
   socket.on('updateWatchlist', ({ action, data }) => {
     var connection = mysql.createConnection({
@@ -61,7 +60,6 @@ io.on('connection', (socket) => {
               //   res.status(400).send('Could not update trending movies');
               console.log(error)
             } else {
-              console.log('updated')
               socket.broadcast.emit('updated', results)
             }
           });
@@ -80,7 +78,6 @@ io.on('connection', (socket) => {
               //   res.status(400).send('Could not update trending movies');
               console.log(error)
             } else {
-              console.log('updated')
               socket.broadcast.emit('updated', results)
             }
           });
@@ -94,7 +91,6 @@ io.on('connection', (socket) => {
 
 
     socket.on('disconnect', () => {
-      console.log('user disconnected');
     });
   });
 });
