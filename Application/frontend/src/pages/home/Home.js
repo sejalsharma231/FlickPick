@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link as RouterLink, useNavigate, Navigate } from "react-router-dom"
 import { validateUser, addToUserWatchlist, removeFromUserWatchlist, getExistsInUserWatchlist, getUserWatchlist, recommendLikeThis } from "../../api/user";
 import { get, update } from "lodash";
@@ -10,20 +10,24 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import {
-  Paper,
   Button,
   Grid,
   TextField,
   FormControl,
   InputLabel,
   Select,
+  Box,
 } from "@mui/material";
 import { getMovies, searchMovies, sortMovies, filterMovies } from "../../api/movies"
 import MUIDataTable from "mui-datatables";
 import { MenuItem } from "@mui/material";
 import { getTouchRippleUtilityClass } from "@mui/material";
 
+import { SocketContext } from '../../context/SocketContext';
+
 const Home = () => {
+  const { socket } = useContext(SocketContext);
+
   const auth = useAuthUser();
   const [rows, setRows] = useState([]);
   const [inputText, setInputText] = useState("");
@@ -280,7 +284,7 @@ const Home = () => {
         display: auth() ? true : false,
         customBodyRender: (item, { currentTableData, rowIndex }) => {
           return (
-            <WLButton currentTableData={currentTableData} rowIndex={rowIndex} ></WLButton>
+            <WLButton currentTableData={currentTableData} rowIndex={rowIndex} socket={socket} ></WLButton>
           )
         },
       }
@@ -328,7 +332,7 @@ const Home = () => {
 
   return (
     <div>
-      <Paper>
+      <Box p={2}>
         {/* <Box p={4}>
           <Grid container direction="column" spacing={1}>
             <Grid item>
@@ -349,14 +353,14 @@ const Home = () => {
             options={options}
           />
         </div>
-      </Paper>
+      </Box>
     </div>
   );
 };
 
 export default Home;
 
-const WLButton = ({ currentTableData, rowIndex }) => {
+const WLButton = ({ currentTableData, rowIndex, socket }) => {
   const auth = useAuthUser();
 
   const [WLButtonText, setWLButtonText] = useState("Add to Watchlist")
@@ -387,11 +391,25 @@ const WLButton = ({ currentTableData, rowIndex }) => {
   //handle changes based on button click
   const handleAddToWatchlist = (data) => {
     if (WLButtonText == "Add to Watchlist") {
-      addToUserWatchlist(auth().userID, data[6]) //make user id dynamic
+      // addToUserWatchlist(auth().userID, data[6]) //make user id dynamic
+      socket.emit('updateWatchlist', ({
+        action:"add",
+        data:{
+          userID: auth().userID,
+          mid:data[6]
+        }
+      }));
       updateWLButtonText("Remove from Watchlist")
 
     } else if (WLButtonText == "Remove from Watchlist") {
-      removeFromUserWatchlist(auth().userID, data[6])
+      // removeFromUserWatchlist(auth().userID, data[6])
+      socket.emit('updateWatchlist', ({
+        action:"remove",
+        data:{
+          userID: auth().userID,
+          mid:data[6]
+        }
+      }));
       updateWLButtonText("Add to Watchlist")
     }
   }

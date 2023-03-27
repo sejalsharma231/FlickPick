@@ -183,9 +183,9 @@ const RegisterComponent = () => {
       .then((response) => {
         signIn({
           token: response.data.token,
-          expiresIn: 30,
+          expiresIn: 10,
           tokenType: "Bearer",
-          authState: { email: newUser.email }
+          authState: { userID: response.data.userID }
 
         });
         navigate("/");
@@ -239,7 +239,3 @@ const RegisterComponent = () => {
   );
 
 }
-
-// Login.propTypes = {
-//   setToken: PropTypes.func.isRequired
-// }

@@ -15,12 +15,23 @@ connection.connect(function (err) {
 
 });
 
-// returns all the users
+// returns all the movies
 router.get('/', function (req, res, next) {
     // connection.connect();
 
     const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies';
     // console.log(queryString);
+    connection.query(queryString, (error, results) => {
+        if (error) {
+            res.send(error);
+        } else {
+            res.send(results);
+        }
+    });
+});
+
+router.get('/trending', function (req, res, next) {
+    const queryString = `SELECT * from (SELECT Movie_ID, count(*) FROM watchlist GROUP BY Movie_ID ORDER BY count(*) desc) as a join movies on a.Movie_ID = movies.Movie_ID LIMIT 20`;
     connection.query(queryString, (error, results) => {
         if (error) {
             res.send(error);

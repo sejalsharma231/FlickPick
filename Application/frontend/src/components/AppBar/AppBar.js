@@ -16,7 +16,7 @@ import { useIsAuthenticated, useSignOut } from 'react-auth-kit';
 import { useNavigate } from "react-router-dom";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-const pages = [];
+const pages = ['trending'];
 const settings = [];
 
 function AppBar() {
@@ -94,7 +94,10 @@ function AppBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page} onClick={() => {
+                  handleCloseNavMenu()
+                  navigate("/trending")
+                }}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -123,7 +126,10 @@ function AppBar() {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={() => {
+                  handleCloseNavMenu()
+                  navigate("/trending")
+                }}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}
@@ -133,7 +139,7 @@ function AppBar() {
           {isAuthenticated() ? (
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <IconButton onClick={handleOpenUserMenu} sx={{  p: 0 }} >
                   <Avatar>
                     <AccountCircleIcon sx = {{color: 'white'}}/>
                   </Avatar>

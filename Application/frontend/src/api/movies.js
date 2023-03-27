@@ -5,6 +5,9 @@ import Axios from '../Axios';
 export const getMovies = () => {
     return Axios().get('/movies');
 };
+export const getTrendingMovies = () => {
+    return Axios().get('/movies/trending');
+};
 
 export const searchMovies = (s) => {
     return Axios().get(`/movies/search/data?name=${s}`);
