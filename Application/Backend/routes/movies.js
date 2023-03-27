@@ -68,24 +68,18 @@ router.get('/sort/data', function (req, res, next) {
 
     if (isValidSortField && isValidSearchField) {
 
-    var queryString = ""
-    if (sortField == 'Name') {
-        sortField = 'Series_Title'
-        queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' order by ' + sortField;
-    } else if (sortField == 'Year') {
-        sortField = 'Released_Year'
-        queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' order by ' + sortField;
-    } else {
-        sortField = 'Runtime'
-        queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' order by ABS(Runtime)'
-    }
-    connection.query(queryString, (error, results) => {
-        if (error) {
-            res.send(error);
+        var queryString = ""
+        if (sortField == 'Name') {
+            sortField = 'Series_Title'
+            queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' order by ' + sortField;
+        } else if (sortField == 'Year') {
+            sortField = 'Released_Year'
+            queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' order by ' + sortField;
         } else {
             sortField = 'Runtime'
+            queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' order by ABS(Runtime)'
         }
-        const queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' order by ' + sortField;
+
         connection.query(queryString, (error, results) => {
             if (error) {
                 res.send(error);
