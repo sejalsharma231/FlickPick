@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from 'prop-types';
+import React, { useState } from "react";
 import { validateUser, postUser } from "../../api/user";
 import { useSignIn } from "react-auth-kit";
 import {
   Tabs,
   Tab,
   Box,
-  TabPanel,
   FormControl,
   TextField,
   Button,
@@ -14,15 +12,13 @@ import {
   FilledInput,
   InputAdornment,
   IconButton,
-  Alert,
-  AlertTitle,
 } from '@mui/material';
 import {
   VisibilityOff,
   Visibility,
-  Padding
 } from '@mui/icons-material';
 import { useNavigate } from "react-router-dom";
+import { Typography } from "@mui/material";
 
 
 export default function Login() {
@@ -32,7 +28,6 @@ export default function Login() {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    console.log(newValue);
   };
 
   return (
@@ -75,13 +70,13 @@ const LoginComponent = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  const [error, setError] = React.useState(false);
+  const [signupError, setSignupError] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setSignupError(null);
     validateUser(credentials)
       .then((response) => {
-        console.log(response)
         signIn({
           token: response.data.token,
           expiresIn: 10,
@@ -93,7 +88,7 @@ const LoginComponent = () => {
 
       })
       .catch((error) => {
-        console.log("Error! Invalid credentials")
+        setSignupError("Error! Invalid credentials")
 
       });
   };
@@ -105,6 +100,11 @@ const LoginComponent = () => {
 
     }}>
       <h1>Please Log In</h1>
+      {signupError && (
+        <Typography color='error'>
+          {signupError}
+        </Typography>
+      )}
       <form onSubmit={handleSubmit}>
         <FormControl>
           <TextField
@@ -139,23 +139,9 @@ const LoginComponent = () => {
               required
             />
           </FormControl>
-          {/* <TextField
-            id="password"
-            label="Password"
-            variant="filled"
-            defaultValue={credentials.password}
-            onChange={handleChange}
-            type="text"
-            size="small"
-            required
-          /> */}
           <Button type="submit" variant="contained">Submit</Button>
         </FormControl>
       </form>
-      {/* <Alert severity="error" >
-        <AlertTitle>Error</AlertTitle>
-         Invalid Credentials
-      </Alert> */}
     </div>
   )
 
@@ -164,6 +150,7 @@ const RegisterComponent = () => {
   const navigate = useNavigate();
   const signIn = useSignIn();
   const [showPassword, setShowPassword] = React.useState(false);
+  const [signupError, setSignupError] = useState(null);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -179,6 +166,7 @@ const RegisterComponent = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setSignupError(null);
     postUser(newUser)
       .then((response) => {
         signIn({
@@ -191,7 +179,8 @@ const RegisterComponent = () => {
         navigate("/");
       })
       .catch((error) => {
-        console.log("Error! Email in use")
+        console.log(error)
+        setSignupError("Error! Email in use");
       });
   };
 
@@ -202,11 +191,15 @@ const RegisterComponent = () => {
       alignItems: 'center'
     }}>
       <h1>Sign Up</h1>
+      {signupError && (
+        <Typography color='error'>
+          {signupError}
+        </Typography>
+      )}
       <form onSubmit={handleSubmit}>
         <FormControl>
           <TextField id="firstName" label="First Name" variant="filled" defaultValue={newUser.firstName} onChange={handleChange} type="text" size="small" required />
           <TextField id="lastName" label="Last Name" variant="filled" defaultValue={newUser.lastName} onChange={handleChange} type="text" size="small" required />
-          {/* <TextField id="password" label="Password" variant="filled" defaultValue={newUser.password} onChange={handleChange} type="text" size="small" required /> */}
           <TextField id="email" label="Email" variant="filled" defaultValue={newUser.email} onChange={handleChange} type="email" size="small" required />
           <FormControl variant="filled">
             <InputLabel htmlFor="password">Password *</InputLabel>
