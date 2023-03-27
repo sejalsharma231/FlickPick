@@ -67,10 +67,21 @@ router.get('/sort/data', function (req, res, next) {
     const isValidSearchField = searchField !== undefined && typeof searchField == "string";
 
     if (isValidSortField && isValidSearchField) {
-        if (sortField == 'Name') {
-            sortField = 'Series_Title'
-        } else if (sortField == 'Year') {
-            sortField = 'Released_Year'
+
+    var queryString = ""
+    if (sortField == 'Name') {
+        sortField = 'Series_Title'
+        queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' order by ' + sortField;
+    } else if (sortField == 'Year') {
+        sortField = 'Released_Year'
+        queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' order by ' + sortField;
+    } else {
+        sortField = 'Runtime'
+        queryString = 'SELECT Series_Title, Released_Year, Runtime, Genres, Overview, IMDB_Rating, Movie_ID, Poster_Link FROM movies where Series_Title like \'%' + searchField + '%\' order by ABS(Runtime)'
+    }
+    connection.query(queryString, (error, results) => {
+        if (error) {
+            res.send(error);
         } else {
             sortField = 'Runtime'
         }
