@@ -137,7 +137,7 @@ router.post('/watchlist/add', function (req, res, next) {
   });
 });
 
-router.get('/watchlist/remove', function (req, res, next) {
+router.post('/watchlist/remove', function (req, res, next) {
   const {
     userID,
     mid,
