@@ -74,7 +74,7 @@ const User = () => {
     };
 
     useEffect(() => {
-        getUserWatchlist(auth().userID)
+        getUserWatchlist({ userID: auth().userID })
             .then(({ data }) => {
                 setRows(data);
             })
