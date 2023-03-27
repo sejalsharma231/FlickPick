@@ -18,5 +18,9 @@ export const sortMovies = (s, str) => {
 };
 
 export const filterMovies = (list, s, str) => {
+    if (str == "") {
+
+    }
+    console.log("filter list before api call made: " + list[1])
     return Axios().get(`/movies/filter/data?list=${list}&sort=${s}&search=${str}`);
 };

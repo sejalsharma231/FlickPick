@@ -14,10 +14,13 @@ import {
   FilledInput,
   InputAdornment,
   IconButton,
+  Alert,
+  AlertTitle,
 } from '@mui/material';
 import {
   VisibilityOff,
-  Visibility
+  Visibility,
+  Padding
 } from '@mui/icons-material';
 import { useNavigate } from "react-router-dom";
 
@@ -65,6 +68,14 @@ const LoginComponent = () => {
     setCredentials({ ...credentials, [e.target.id]: e.target.value });
   };
   const signIn = useSignIn();
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+  const [error, setError] = React.useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -82,6 +93,8 @@ const LoginComponent = () => {
 
       })
       .catch((error) => {
+        console.log("Error! Invalid credentials")
+
       });
   };
   return (
@@ -89,6 +102,7 @@ const LoginComponent = () => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center'
+
     }}>
       <h1>Please Log In</h1>
       <form onSubmit={handleSubmit}>
@@ -103,7 +117,29 @@ const LoginComponent = () => {
             size="small"
             required
           />
-          <TextField
+          <FormControl variant="filled">
+            <InputLabel htmlFor="password">Password *</InputLabel>
+            <FilledInput
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              defaultValue={credentials.password}
+              onChange={handleChange}
+              required
+            />
+          </FormControl>
+          {/* <TextField
             id="password"
             label="Password"
             variant="filled"
@@ -112,10 +148,14 @@ const LoginComponent = () => {
             type="text"
             size="small"
             required
-          />
+          /> */}
           <Button type="submit" variant="contained">Submit</Button>
         </FormControl>
       </form>
+      {/* <Alert severity="error" >
+        <AlertTitle>Error</AlertTitle>
+         Invalid Credentials
+      </Alert> */}
     </div>
   )
 
@@ -151,6 +191,7 @@ const RegisterComponent = () => {
         navigate("/");
       })
       .catch((error) => {
+        console.log("Error! Email in use")
       });
   };
 
