@@ -1,64 +1,51 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom"
-import { validateUser, addToUserWatchlist, removeFromUserWatchlist, getExistsInUserWatchlist, getUserWatchlist } from "../../api/user";
-import { get, update } from "lodash";
+import { getExistsInUserWatchlist } from "../../api/user";
+import { get } from "lodash";
 import { useAuthUser } from "react-auth-kit";
-import { Dropdown, DropdownButton } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import FormLabel from '@mui/material/FormLabel';
 import {
-  Paper,
   Button,
-  Grid,
   TextField,
   FormControl,
   InputLabel,
   Select,
+  Box,
 } from "@mui/material";
 import { getMovies, searchMovies, sortMovies, filterMovies } from "../../api/movies"
 import MUIDataTable from "mui-datatables";
 import { MenuItem } from "@mui/material";
 
+import { SocketContext } from '../../context/SocketContext';
+
 const Home = () => {
-  const  auth  = useAuthUser();
+  const { socket } = useContext(SocketContext);
+
+  const auth = useAuthUser();
   const [rows, setRows] = useState([]);
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState("");
   const [sort, setSortText] = useState("");
-  const [checked, setChecked] = useState(true);
   var sortText = ""
-  var Comedy = true
-  var Drama = true
-  var Action = true
-  var Romance = true
+  const [filterItems, setFilterItems] = useState({ Comedy: true, Action: true, Drama: true, Romance: true })
+  useEffect(() => {
+    handleFilter()
+  }, [filterItems]);
 
-  const toggleComedy = () => {
-    Comedy = !Comedy
-  }
-  const toggleAction = () => {
-    Action = !Action
-  }
-  const toggleDrama = () => {
-    Drama = !Drama
-  }
-  const toggleRomance = () => {
-    Romance = !Romance
-  }
-
-  const handleFilter = async () => {
+  const handleFilter = () => {
     var filterList = []
-    if (Comedy) {
+    if (filterItems.Comedy) {
       filterList.push("Comedy")
     }
-    if (Drama) {
+    if (filterItems.Drama) {
       filterList.push("Drama")
     }
-    if (Romance) {
+    if (filterItems.Romance) {
       filterList.push("Romance")
     }
-    if (Action) {
+    if (filterItems.Action) {
       filterList.push("Action")
     }
     filterMovies(filterList, sortText, inputText).then(({ data }) => {
@@ -105,15 +92,14 @@ const Home = () => {
 
         <FormControl
           size="small"
-          style={{ marginLeft: "20px", minWidth:"100px" }}
+          style={{ marginLeft: "20px", minWidth: "100px" }}
           variant="outlined"
-           
+
         >
           <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
           <Select
             label="Sort By"
             onChange={({ target }) => {
-              console.log(target.value);
               setSortText(target.value);
               sortText = target.value;
               handleSort();
@@ -127,66 +113,63 @@ const Home = () => {
         </FormControl>
 
 
-        {/* <FormControl component="fieldset">
+        <FormControl component="fieldset">
           <FormGroup aria-label="position" row>
             <FormControlLabel
-              defaultChecked
               value="end"
               control={
                 <Checkbox
-                  defaultChecked={checked}
-                  onChange={() => {
-                    toggleComedy();
-                    handleFilter();
+                  defaultChecked={true}
+                  name="Comedy"
+                  onChange={(e) => {
+                    setFilterItems({ ...filterItems, [e.target.name]: e.target.checked });
                   }}
                 />}
               label="Comedy"
               labelPlacement="end"
-
             />
             <FormControlLabel
-              defaultChecked
               value="end"
               control={
                 <Checkbox
-                  defaultChecked={checked}
+                  defaultChecked={true}
+                  name="Drama"
+                  onChange={(e) => {
+                    setFilterItems({ ...filterItems, [e.target.name]: e.target.checked });
+                  }}
                 />}
               label="Drama"
               labelPlacement="end"
-              onChange={() => {
-                toggleDrama();
-                handleFilter();
-              }}
+
             />
             <FormControlLabel
-              defaultChecked
               value="end"
               control={
                 <Checkbox
-                  defaultChecked={checked}
+                  defaultChecked={true}
+                  name="Action"
+                  onChange={(e) => {
+                    setFilterItems({ ...filterItems, [e.target.name]: e.target.checked });
+                  }}
                 />}
               label="Action"
               labelPlacement="end"
-              onChange={() => {
-                toggleAction();
-                handleFilter();
-              }}
             />
             <FormControlLabel
               value="end"
               control={
                 <Checkbox
-                  defaultChecked={checked}
+                  defaultChecked={true}
+                  name="Romance"
+                  onChange={(e) => {
+                    setFilterItems({ ...filterItems, [e.target.name]: e.target.checked })
+                  }}
                 />}
               label="Romance"
               labelPlacement="end"
-              onChange={() => {
-                toggleRomance();
-                handleFilter();
-              }}
             />
           </FormGroup>
-        </FormControl> */}
+        </FormControl>
 
       </div>
     );
@@ -219,7 +202,7 @@ const Home = () => {
       }
     },
     {
-      name: "Genre",
+      name: "Genres",
       label: "Genre",
     },
     {
@@ -231,8 +214,8 @@ const Home = () => {
       label: "IMDB Rating",
     },
     {
-      name: "id",
-      label: "id",
+      name: "Movie_ID",
+      label: "Movie_ID",
       options: {
         display: false,
       }
@@ -254,14 +237,28 @@ const Home = () => {
         display: auth() ? true : false,
         customBodyRender: (item, { currentTableData, rowIndex }) => {
           return (
-            <WLButton currentTableData={currentTableData} rowIndex={rowIndex} ></WLButton>
+            <WLButton currentTableData={currentTableData} rowIndex={rowIndex} socket={socket} ></WLButton>
+          )
+        },
+      }
+    },
+    {
+      name: "Recommend",
+      label: "Recommend",
+      options: {
+        filter: false,
+        sort: false,
+        empty: true,
+        customBodyRender: (item, { currentTableData, rowIndex }) => {
+          return (
+            <WLButton2 currentTableData={currentTableData} rowIndex={rowIndex} ></WLButton2>
           )
         },
       }
     }
   ];
 
-  
+
   const options = {
     selectableRowsHideCheckboxes: true,
     selectToolbarPlacement: 'none',
@@ -287,19 +284,7 @@ const Home = () => {
 
   return (
     <div>
-      <Paper>
-        {/* <Box p={4}>
-          <Grid container direction="column" spacing={1}>
-            <Grid item>
-              <Typography component="h1" variant="h4"><b>Home</b></Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="body2">
-                Welcome to the home page. Take a look around!
-          </Typography>
-            </Grid>
-          </Grid>
-        </Box> */}
+      <Box p={2}>
         <div style={{ height: 400, width: '100%' }}>
           <MUIDataTable
             title={"Movie List"}
@@ -308,49 +293,62 @@ const Home = () => {
             options={options}
           />
         </div>
-      </Paper>
+      </Box>
     </div>
   );
 };
 
 export default Home;
 
-const WLButton = ({ currentTableData, rowIndex }) => {
+const WLButton = ({ currentTableData, rowIndex, socket }) => {
   const auth = useAuthUser();
 
   const [WLButtonText, setWLButtonText] = useState("Add to Watchlist")
   //const [WLButtonText, setWLButtonText] = useState(false);
   useEffect(() => {
-    if(auth()){
-    getExistsInUserWatchlist(auth().userID, get(currentTableData[rowIndex], 'data')[6])
-      .then(({ data }) => {
-        if (data.length == 1) {
-          setWLButtonText("Remove from Watchlist");
-        }
-        else {
-          setWLButtonText("Add to Watchlist");
-        }
+    if (auth()) {
+      getExistsInUserWatchlist(auth().userID, get(currentTableData[rowIndex], 'data')[6])
+        .then(({ data }) => {
+          if (data.length == 1) {
+            setWLButtonText("Remove from Watchlist");
+          }
+          else {
+            setWLButtonText("Add to Watchlist");
+          }
 
-      }).catch((error) => {
-        console.log(error);
-      })
+        }).catch((error) => {
+          console.log(error);
+        })
     }
   }
   )
 
-  //console.log(getExists(1,"watchlist",get(currentTableData[rowIndex], 'data')[6]));
   const updateWLButtonText = (text) => setWLButtonText(text)
 
   //check if the movie already exists in the watchlist, then change functionality to delete in the beginning
 
   //handle changes based on button click
-  const handleAddToWatchlist = (data) =>{
+  const handleAddToWatchlist = (data) => {
     if (WLButtonText == "Add to Watchlist") {
-      addToUserWatchlist(auth().userID, data[6]) //make user id dynamic
+      // addToUserWatchlist(auth().userID, data[6]) //make user id dynamic
+      socket.emit('updateWatchlist', ({
+        action: "add",
+        data: {
+          userID: auth().userID,
+          mid: data[6]
+        }
+      }));
       updateWLButtonText("Remove from Watchlist")
 
     } else if (WLButtonText == "Remove from Watchlist") {
-      removeFromUserWatchlist(auth().userID, data[6])
+      // removeFromUserWatchlist(auth().userID, data[6])
+      socket.emit('updateWatchlist', ({
+        action: "remove",
+        data: {
+          userID: auth().userID,
+          mid: data[6]
+        }
+      }));
       updateWLButtonText("Add to Watchlist")
     }
   }
@@ -362,6 +360,32 @@ const WLButton = ({ currentTableData, rowIndex }) => {
       onClick={() => handleAddToWatchlist(get(currentTableData[rowIndex], 'data'))}
     >
       {WLButtonText}
+    </Button>
+  )
+}
+
+const WLButton2 = ({ currentTableData, rowIndex }) => {
+  const auth = useAuthUser();
+  const navigate = useNavigate();
+  //handle changes based on button click
+  const handleRecommend = (data) => {
+    if (data[0]) {
+      navigate("/recommend", {
+        state: {
+          movieName: data[0]
+        }
+      });
+    }
+
+  }
+
+  return (
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={() => handleRecommend(get(currentTableData[rowIndex], 'data'))}
+    >
+      Recommend
     </Button>
   )
 }

@@ -2,11 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {
     Box,
     Grid,
-    Paper,
     Typography
 } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
-import { Link } from '@mui/material';
 import MUIDataTable from "mui-datatables";
 import { getUserWatchlist } from '../../api/user';
 import { useAuthUser } from "react-auth-kit";
@@ -37,31 +34,31 @@ const User = () => {
             label: "Length",
         },
         {
-            name: "Genre",
+            name: "Genres",
             label: "Genre",
         },
         {
             name: "Overview",
             label: "Summary",
-          },
-          {
+        },
+        {
             name: "IMDB_Rating",
             label: "IMDB Rating",
-          },
-          {
-            name: "id",
-            label: "id",
+        },
+        {
+            name: "Movie_ID",
+            label: "Movie_ID",
             options: {
-            display: false,
+                display: false,
             }
-          },
-          {
+        },
+        {
             name: "Postr_Link",
             label: "Link",
             options: {
-            display: false,
+                display: false,
             }
-          },
+        },
     ];
 
     const [rows, setRows] = useState([]);
@@ -77,7 +74,7 @@ const User = () => {
     };
 
     useEffect(() => {
-        getUserWatchlist(auth().userID)
+        getUserWatchlist({ userID: auth().userID })
             .then(({ data }) => {
                 setRows(data);
             })
@@ -89,19 +86,13 @@ const User = () => {
 
     return (
         <div>
-            <Paper>
-                <Box p={4}>
-                    <Grid container direction="column" spacing={1}>
-                        <Grid item>
-                            <Typography component="h1" variant="h4"><b>User</b></Typography>
-                        </Grid>
-                        <Grid item>
-                            <Typography variant="body2">
-                                Welcome to the User page
-                            </Typography>
-                        </Grid>
+            <Box p={2}>
+                <Grid container direction="column" spacing={1} pb={2}>
+                    <Grid item>
+                        <Typography component="h1" variant="h4"><b>Welcome to your page</b></Typography>
                     </Grid>
-                </Box>
+                </Grid>
+
                 <div style={{ height: 400, width: '100%' }}>
                     <MUIDataTable
                         title={"Watch List"} // only print if in the watchlist
@@ -110,7 +101,7 @@ const User = () => {
                         options={options}
                     />
                 </div>
-            </Paper>
+            </Box>
         </div>
     );
 };

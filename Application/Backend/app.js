@@ -3,8 +3,17 @@ const port = 8000;
 
 const express = require("express");
 const cors = require('cors');
+var mysql = require("mysql");
 const app = express();
 const parse = require("body-parser");
+const { Server } = require("socket.io");
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    method: ["GET", "POST"]
+  }
+});
 
 const userRouter = require('./routes/user');
 const moviesRouter = require('./routes/movies');
@@ -17,34 +26,75 @@ app.use('/user', userRouter);
 app.use('/movies', moviesRouter);
 
 
-//const request = require("request");
+io.on('connection', (socket) => {
 
-// var mysql = require('mysql');
-// var connection = mysql.createConnection({
-//   host: 'localhost',
-//   user: 'root',
-//   password: 'CS348Project',
-//   database: 'Project'
-// });
-// connection.connect();
+  socket.on('updateWatchlist', ({ action, data }) => {
+    var connection = mysql.createConnection({
+      host: 'localhost',
+      user: 'root',
+      password: 'CS348Project',
+      database: 'Project'
+    });
 
-// const server = http.createServer((req, res) => {
-//   res.statusCode = 200;
-//   res.setHeader('Content-Type', 'text/plain');
-//   res.end('Hello World\n');
-// });
+    connection.connect(function (err) {
+      if (err) throw err
 
-// connection.query('SELECT * from movies limit 1', function (error, results, fields) {
-//   if (error) throw error;
-//   console.log('The solution is: ', results);
-// });
+    });
+    const {
+      userID,
+      mid,
+    } = data;
 
-// app.get("/", (req, res) => {
-//   res.json({message: "Server is now running on 8000"})
-// });
 
-// connection.end();
+    if (action === 'add') {
+      // add validators to check that everything is a string            
+      const queryString = `INSERT into watchlist (userID,Movie_ID) VALUES (${userID}, ${mid})`;
+      connection.query(queryString, (error) => {
+        if (error) {
+          //   res.status(400).send('Database could not delete from watchlist');
+          console.log(error)
+        } else {
+          const queryString = `SELECT * from (SELECT Movie_ID, count(*) FROM watchlist GROUP BY Movie_ID ORDER BY count(*) desc) as a join movies on a.Movie_ID = movies.Movie_ID LIMIT 20`;
+          connection.query(queryString, (error, results) => {
+            if (error) {
+              //   res.status(400).send('Could not update trending movies');
+              console.log(error)
+            } else {
+              socket.broadcast.emit('updated', results)
+            }
+          });
+        }
+      });
+    } else if (action === 'remove') {
+      const queryString = `DELETE from watchlist WHERE userID = ${userID} and Movie_ID = ${mid}`;
+      connection.query(queryString, (error) => {
+        if (error) {
+          //   res.status(400).send('Database could not delete from watchlist');
+          console.log(error)
+        } else {
+          const queryString = `SELECT * from (SELECT Movie_ID, count(*) FROM watchlist GROUP BY Movie_ID ORDER BY count(*) desc) as a join movies on a.Movie_ID = movies.Movie_ID LIMIT 20`;
+          connection.query(queryString, (error, results) => {
+            if (error) {
+              //   res.status(400).send('Could not update trending movies');
+              console.log(error)
+            } else {
+              socket.broadcast.emit('updated', results)
+            }
+          });
+        }
+      });
+    }
+    socket.on('disconnect', () => socket.disconnect());
+    socket.on('connect_error', (err) => {
+      console.log(`connect_error due to ${err.message}`);
+    });
 
-app.listen(port, () => {
+
+    socket.on('disconnect', () => {
+    });
+  });
+});
+
+  server.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
