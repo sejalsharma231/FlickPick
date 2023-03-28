@@ -1,22 +1,44 @@
 ## CS348Project
 
-## How to create the sample database
+## How to create tables and populate the sample database
 
-Use the mysql CLI commands to create a new database
- CREATE database Project
- USE Project
- source ./create_tables.sql;
+Step 1: Download the SampleDump.sql file from github
+
+Step 2: Log into mysql using your username and password on the command line:
+ mysql -u <username> -p 
+ 
+Step 3: Once logged in, run the following commands to load the database:
+
+ CREATE database Project;
+ USE Project;
+ source <PATH_NAME/SampleDump.sql>;
+ 
+ ## How to create tables and populate the production database
+
+Step 1: Download the ProductionDatabase.sql file from github
+
+Step 2: Log into mysql using your username and password on the command line:
+ mysql -u <username> -p 
+ 
+Step 3: Once logged in, run the following commands to load the database:
+
+ CREATE database Project;
+ USE Project;
+ source <PATH_NAME/ProductionDatabase.sql>;
  
  
-## How to generate test query output using CLI
+## How to generate test query output using CLI for Sample dataset
 
- tee ./test-sample.out
+ tee ./test-sample.out;
  source ./test-sample.sql;
+ 
+ ## How to generate test query output using CLI for Production dataset
+
  
  
 ## How to run database-driven application
 
- Navigate to movies.js and user.js in the Backend/roots folder of the application.
+ Navigate to movies.js and user.js in the Application/Backend/roots folder of the application.
  Update the following code in both the files to reflect your connection parameters.
  
  var connection = mysql.createConnection({
@@ -40,5 +62,9 @@ run 'npm install' in the Frontend directory and 'npm start' to start the server
 5) Adding movies to a Watchlist
 6) User Authentication
 7) Well Designed UI
+8) Recommend Movie functionality
+9) Filter movie functionality
+10) Input validation
+11) Multi-user access control
 
 Please refer to report.pdf for additional details.
