@@ -10,7 +10,9 @@ Step 2: Log into mysql using your username and password on the command line:
 Step 3: Once logged in, run the following commands to load the database:
 
  CREATE database Project;
+ 
  USE Project;
+ 
  source <PATH_NAME/SampleDump.sql>;
  
  ## How to create tables and populate the production database
@@ -23,10 +25,11 @@ Step 2: Log into mysql using your username and password on the command line:
 Step 3: Once logged in, run the following commands to load the database:
 
  CREATE database Project;
+ 
  USE Project;
+ 
  source <PATH_NAME/ProductionDatabase.sql>;
- 
- 
+  
 ## How to generate test query output using CLI for Sample dataset
 
  tee ./test-sample.out;
@@ -60,7 +63,7 @@ run 'npm install' in the Backend directory and 'npm start' to start the server
 run 'npm install' in the Frontend directory and 'npm start' to start the server
 
 
-## Currently supported features
+## List of all supported features
 
 1) Creating an Account (adding a new user)
 2) Login
