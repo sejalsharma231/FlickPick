@@ -39,9 +39,9 @@ Step 3: Once logged in, run the following commands to load the database:
  
 ## How to run database-driven application
 
- <b>Navigate to movies.js and user.js in the Application/Backend/roots folder of the application.<b>
+ <b>Navigate to movies.js and user.js in the Application/Backend/roots folder of the application.</b>
  
- <u>Update the following code in both the files to reflect your connection parameters or make sure your parameters are the same as follows if you do not want to make any changes in the source code.<u>
+ <u>Update the following code in both the files to reflect your connection parameters or make sure your parameters are the same as follows if you do not want to make any changes in the source code.</u>
  
  var connection = mysql.createConnection({
   
