@@ -40,14 +40,20 @@ Step 3: Once logged in, run the following commands to load the database:
 ## How to run database-driven application
 
  Navigate to movies.js and user.js in the Application/Backend/roots folder of the application.
+ 
  #Update the following code in both the files to reflect your connection parameters or make sure your parameters are the same as follows if you do not want to make any changes in the source code.
  
  var connection = mysql.createConnection({
-  host: 'localhost', //update
-  user: 'root', //update 
-  password: 'CS348Project', //update
-  database: 'Project' //update
-  });
+  
+ host: 'localhost', //update
+  
+ user: 'root', //update 
+  
+ password: 'CS348Project', //update
+  
+ database: 'Project' //update
+  
+ });
 
 run 'npm install' in the Backend directory and 'npm start' to start the server
 
