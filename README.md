@@ -5,6 +5,9 @@
 Step 1: Download the SampleDump.sql file from github
 
 Step 2: Log into mysql using your username and password on the command line:
+
+*Make sure the username and password match in the source code (refer to section "How to run database-driven application" below)*
+
  mysql -u <username> -p 
  
 Step 3: Once logged in, run the following commands to load the database:
@@ -20,6 +23,9 @@ Step 3: Once logged in, run the following commands to load the database:
 Step 1: Download the ProductionDatabase.sql file from github
 
 Step 2: Log into mysql using your username and password on the command line:
+ 
+ *Make sure the username and password match in the source code (refer to section "How to run database-driven application" below)*
+ 
  mysql -u <username> -p 
  
 Step 3: Once logged in, run the following commands to load the database:
