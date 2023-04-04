@@ -39,11 +39,13 @@ Step 3: Once logged in, run the following commands to load the database:
 ## How to generate test query output using CLI for Sample dataset
 
  tee ./test-sample.out;
+ 
  source ./test-sample.sql;
  
  ## How to generate test query output using CLI for Production dataset
 
  tee ./test-production.out;
+ 
  source ./test-production.sql;
  
 ## How to run database-driven application
