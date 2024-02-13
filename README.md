@@ -1,5 +1,6 @@
 ## FlickPick - CS348Project
 
+<img width="468" alt="FlickPick" src="https://github.com/sejalsharma231/FlickPick/assets/64613226/98cdb42c-b39a-47f7-8bc3-453e845972ba">
 
 
 ## How to create tables and populate the sample database
