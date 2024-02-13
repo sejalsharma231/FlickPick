@@ -1,4 +1,6 @@
-## CS348Project
+## FlickPick - CS348Project
+
+
 
 ## How to create tables and populate the sample database
 
